@@ -6,6 +6,13 @@ $email = $_SESSION['Email'];
 if (isset($_POST['submsg'])) {
 
   $to_mail = $_POST['to_name'];
+  if ($to_mail==$email) {
+    echo json_encode([
+      'response' => false,
+      'error_id' => 'toname'
+    ]);
+    die;
+  }
 
   if (!filter_var($to_mail, FILTER_VALIDATE_EMAIL)) {
     echo json_encode([
