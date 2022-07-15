@@ -72,7 +72,6 @@ if (!isset($_SESSION['Email'])) {
                     <div class="form-check mt-2">
                         <label class="form-check-label " for="checkbox">
                             <input class="form-check-input" type="checkbox" value="" id="checkbox" />
-
                         </label>
                     </div>
                     <div><button class="btn btn-outline-dark mx-5" style="display:none" id="del" type="submit">Delete</button></div>
