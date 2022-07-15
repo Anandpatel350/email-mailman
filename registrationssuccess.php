@@ -14,7 +14,7 @@
    
     <div class="jumbotron text-center vh-100 d-flex justify-content-center align-items-center">
     <div>
-        <h1 class="display-1 ">Thank You........!</h1>   
+        <h1 class="display-1 ">Thank You!</h1>   
         <p class="lead text-success">You Have Registered Successfully</p>
         <hr class="text-success">
         <p>
