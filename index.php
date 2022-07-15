@@ -17,7 +17,7 @@
     <div class="container-fluid h-custom">
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-md-9 col-lg-6 col-xl-5">
-          <h2 class="text-center">Mailman.conm</h2>
+          <h2 class="text-center">Mailman.com</h2>
           <img src="./pictures/logo.png" class="img-fluid pt-2" alt="Sample image">
         </div>
         <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">

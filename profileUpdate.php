@@ -48,7 +48,7 @@ if (!isset($_SESSION['Email'])) {
 
         <div class="col-md-9 ">
 
-          <h2>Mailman.com</h2>
+          <h2>Mailman.com...</h2>
           <div>
             <form id="formdata">
               <span id="RgsErr" class="text-danger"></span>
