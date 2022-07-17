@@ -12,64 +12,136 @@ if (!isset($_SESSION['Email'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link href="./scsscode/mainpage.css" rel="stylesheet">
+    <!-- <link href="./scsscode/mainpage.css" rel="stylesheet"> -->
     <title>inbox</title>
-</head> 
+    <!-- newcss -->
+    <style>
+      
+        body {
+            margin: 0;
+            padding: 0;
+            /* font-family: "Lato", sans-serif; */
+        }
+
+        .sidebar {
+            margin: 0;
+            padding: 0;
+            width: 400px;
+            background-color: #f1f1f1;
+            position: absolute;
+            height: 100%;
+            overflow: auto;
+        }
+
+        .sidebar a {
+            display: block;
+            color: black;
+            padding: 16px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+
+
+        .sidebar a.active {
+            background-color: #04AA6D;
+            color: white;
+        }
+
+
+        .sidebar a:hover:not(.buttonq) {
+
+            color: red;
+        }
+
+        div.content {
+            margin-left: 430px;
+            margin-top: 50px;
+            padding: 1px 16px;
+            height: auto;
+            /* width: 70%; */
+        }
+
+        @media screen and (max-width: 700px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .sidebar a {
+                float: left;
+            }
+
+            div.content {
+                margin-left: 0;
+            
+            }
+        }
+
+        @media screen and (max-width: 400px) {
+            .sidebar a {
+                text-align: center;
+                float: none;
+            }
+        }
+      
+    </style>
+
+    <!-- 00000000000000 -->
+</head>
 
 <body>
-    <!-- header -->
-    <nav class="navbar navbar-light bg-success p-4  px-5">
-        <a>
-            <h2 class="text-light ms-5 ps-5"></h2>
-        </a>
-        <form class="form-inline ps-5 ms-5">
-            <input class="form-control mr-2 ms-5 ps-5" type="search" placeholder="Search" aria-label="Search" id="search-item">
-        </form>
-        <div class="dropdown">
-            <div class="d-flex py-2">
-                <!-- username -->
-                <button class="btn btn-outline-dark me-3" type="submit"><?php echo $_SESSION['Email']; ?></button>
-                <?php
-                $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';
-                ?>
+    <!-- new html -->
+    <nav class="navbar navbar-light bg-success">
+        <div class="container-fluid m-3">
+            <a class="navbar-brand">
+                <h1 class="text-light ms-2">Mail Man</h1>
+            </a>
+            <form>
+                <input type="search" class="form-control rounded px-5" placeholder="Search" aria-label="Search" aria-describedby="search-addon" id="search-item" />
+            </form>
+            <div class="dropdown">
+                <div class="d-flex">
+                        <!-- username -->
+                        <button class="btn btn-outline-dark me-3" type="submit"><?php echo $_SESSION['Email']; ?></button>
+                        <?php
+                        $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';
+                        ?>
+                    
+                        <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
+                                <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
+                            </ul>
 
-                <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:70px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
-                    <ul class="dropdown-menu fix" aria-labelledby="dropdownMenu2">
-                        <li><button class="dropdown-item" type="button"><a href="userprofile.php">Profile</a></button></li>
-                        <li><button class="dropdown-item" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
-                    </ul>
-
+                        </div>
+                    
                 </div>
             </div>
+
         </div>
     </nav>
-    <div class="row">
-        <div class="col-sm-3">
-            <div class="SideBar">
-                <a>
-                    <h2 class="text-light  ps-4">MailMan</h2>
-                </a>
-                <div><button type="submit" class="btn btn-outline-dark bg-info mt-5 px-5 ms-4 my-3" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Compose</button></div>
-                <ul class="list-group text-center w-50 ms-3 my-2">
-                    <a href="" class="text-decoration-none">
-                        <li class="list-group-item text-monospace my-2 btnindex">Inbox</li>
-                    </a>
-                    <a href="" class="text-decoration-none">
-                        <li class="list-group-item text-monospace my-2 btnsend">Send</li>
-                    </a>
-                    <a href="" class="text-decoration-none">
-                        <li class="list-group-item text-monospace my-2 btndraft">Draft</li>
-                    </a>
-                    <a href="" class="text-decoration-none">
-                        <li class="list-group-item text-monospace my-2 btntrash">Trash</li>
-                    </a>
-                </ul>
-            </div>
+
+   
+    <!-- netatable -->
+    <div class="sidebar">
+        <div class="mt-3">
+        <a ><div><button type="submit" class="btn btn-outline-dark bg-info px-5 " data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Compose</button></div></a>
+        <a href="#news" class="btninbox">Inbox</a>
+        <a href="#contact" class="btnsend">Send</a>
+        <a href="#about" class="btndraft">Draft</a>
+        <a href="#about" class="btntrash">Trash</a>
         </div>
-        <div class="col-sm-9">
-            <div class="container mt-5 ms-1">
+    </div>
+
+    
+        <div class="content">
+
+        <div class="col-sm-12">
+            <div class="container">
                 <div class="d-flex ">
-                    <div class="form-check mt-2">
+                    <div class="form-check">
                         <label class="form-check-label " for="checkbox">
                             <input class="form-check-input" type="checkbox" value="" id="checkbox" />
                         </label>
@@ -77,10 +149,9 @@ if (!isset($_SESSION['Email'])) {
                     <div><button class="btn btn-outline-dark mx-5" style="display:none" id="del" type="submit">Delete</button></div>
                     <div><button class="btn btn-outline-dark " style="display:none" id="ru" type="submit">Read/Unread</button></div>
                 </div>
-                <div class="pt-5 justify-content-around">
+                <div class="pt-3">
                     <div class="card">
                         <h5 class="card-header" id="heading">Inbox</h5>
-
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table">
@@ -160,6 +231,7 @@ if (!isset($_SESSION['Email'])) {
                 </div>
             </div>
         </div>
+        </div>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -188,11 +260,12 @@ if (!isset($_SESSION['Email'])) {
 
                     }
                 });
+              
                 // -----------------------open mail-------------
                 $(document).on("click", "tr", function(e) {
 
                     e.preventDefault(e);
-                   
+
                     $("#table-data").html("");
                     $("#heading").html("mail box");
                     $("tr").hide();
@@ -361,7 +434,10 @@ if (!isset($_SESSION['Email'])) {
                         }
                     });
                 });
-
+                $('.btninbox').click(function()
+                {
+              location.href="dashboard.php"
+                });
                 $(".btnsend").click(function(e) {
 
                     e.preventDefault(e);
@@ -447,7 +523,6 @@ if (!isset($_SESSION['Email'])) {
                 });
 
                 // ----------------------delete buttons------------
-
                 $(document).on("click", ".check", function(e) {
                     e.stopPropagation();
                     var checke = $(this).is(':checked');
@@ -465,7 +540,7 @@ if (!isset($_SESSION['Email'])) {
 
                             data: {
 
-                                id: iddata
+                                ids: iddata
                             },
                             success: function(data) {
                                 if (data['response']) {
@@ -481,6 +556,8 @@ if (!isset($_SESSION['Email'])) {
 
                     });
                 });
+
+                
             });
         </script>
 </body>

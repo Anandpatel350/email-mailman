@@ -186,8 +186,8 @@ if (isset($_POST['inboxitem'])) {
 }
 
 // -----------------------------------checkbox------------------------
-if (isset($_POST['id'])) {
-  $IDD = $_POST['id'];
+if (isset($_POST['ids'])) {
+  $IDD = $_POST['ids'];
   $sql = "UPDATE userdata SET trashstatus = '1' WHERE id='$IDD'";
   if ($obj->insert($sql)) {
     echo json_encode([

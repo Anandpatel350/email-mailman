@@ -21,26 +21,31 @@ if (!isset($_SESSION['Email'])) {
 </head>
 
 <body>
-  <nav class="navbar navbar-light bg-success p-4  px-5">
-    <a>
-      <h2 class="text-light ps-5">mailman</h2>
-    </a>
+<nav class="navbar navbar-light bg-success">
+        <div class="container-fluid m-3">
+            <a class="navbar-brand">
+                <h1 class="text-light ms-2">Mail Man</h1>
+            </a>
+            <div class="dropdown">
+                <div class="d-flex">
+                        <!-- username -->
+                        <button class="btn btn-outline-dark me-3" type="submit"><?php echo $_SESSION['Email']; ?></button>
+                        <?php
+                        $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';
+                        ?>
+                    
+                        <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
+                            </ul>
 
-    <div class="dropdown">
-      <div class="d-flex py-2">
-        <!-- username -->
-        <button class="btn btn-outline-dark me-3" type="submit"><?php echo $_SESSION['Email']; ?></button>
-        <?php
-        $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';
-        ?>
-        <img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle" style="width:40px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
+                        </div>
+                    
+                </div>
+            </div>
 
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-          <li><button class="dropdown-item" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+        </div>
+    </nav>
   <section class="vh-100">
     <div class="container h-custom">
 
@@ -48,7 +53,7 @@ if (!isset($_SESSION['Email'])) {
 
         <div class="col-md-9 ">
 
-          <h2>Mailman.com...</h2>
+          <h2>Mailman.com</h2>
           <div>
             <form id="formdata">
               <span id="RgsErr" class="text-danger"></span>

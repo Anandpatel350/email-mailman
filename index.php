@@ -42,7 +42,7 @@
 
               <div class="d-flex justify-content-between pt-3">
                 <a href="./forgetlink.php" class="pt-2">Forgot password?</a>
-                <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body " id="Signin" name="submit">login</button>
+                <button type="submit" class="btn btn-success btn-lg gradient-custom-4 " id="Signin" name="submit">login</button>
               </div>
               <div>
                 <p class="pt-3">don't have an account yet?</p>
