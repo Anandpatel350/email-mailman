@@ -141,11 +141,6 @@ if (!isset($_SESSION['Email'])) {
         <div class="col-sm-12">
             <div class="container">
                 <div class="d-flex ">
-                    <div class="form-check">
-                        <label class="form-check-label " for="checkbox">
-                            <input class="form-check-input" type="checkbox" value="" id="checkbox" />
-                        </label>
-                    </div>
                     <div><button class="btn btn-outline-dark mx-5" style="display:none" id="del" type="submit">Delete</button></div>
                     <div><button class="btn btn-outline-dark " style="display:none" id="ru" type="submit">Read/Unread</button></div>
                 </div>
