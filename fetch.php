@@ -83,7 +83,7 @@ if (isset($_POST['submsg'])) {
 
   $dat = date("d-m-y h:i:s");
 
-  $wa = "INSERT INTO userdata(to_email,from_email, cc_email,bcc_email ,`subject`, `message`, attachment,`time`,sendstatus,recievestatus,draftstatus,trashstatus) VALUES ('$to_mail','$email','$cc_mail','$bcc_mail', '$sub_mail', '$text_mail ', '$name','$dat','0','0','0','0')";
+  $wa = "INSERT INTO userdata(to_email,from_email, cc_email,bcc_email ,`subject`, `message`, attachment,`time`,from_trash,to_trash,cc_trash,bcc_trash,draft) VALUES ('$to_mail','$email','$cc_mail','$bcc_mail', '$sub_mail', '$text_mail ', '$name','$dat','0','0','0','0','0')";
 
   if ($obj->insert($wa)) {
     echo json_encode(['response' => true, 'message' => 'Msg sent successfull']);
@@ -105,8 +105,7 @@ if (isset($_POST['draftdata'])) {
   move_uploaded_file($temp_name, $path);
 
   $dat = date("d-m-y h:i:s");
-
-  $wa = "INSERT INTO userdata(to_email,from_email, cc_email,bcc_email ,`subject`, `message`, attachment,`time`,sendstatus,recievestatus,draftstatus,trashstatus) VALUES ('$to_mail','$email','$cc_mail','$bcc_mail', '$sub_mail', '$text_mail ', '$name','$dat','0','0','1','0')";
+  $wa = "INSERT INTO userdata(from_email,to_email, cc_email,bcc_email ,`subject`, `message`, attachment,`time`,from_trash,to_trash,cc_trash,bcc_trash,draft) VALUES ('$email','$to_mail','$cc_mail','$bcc_mail', '$sub_mail', '$text_mail ', '$name','$dat','0','0','0','0','1')";
 
   if ($obj->insert($wa)) {
     echo json_encode(['response' => true, 'message' => 'Msg saved in draft successfull']);
@@ -127,7 +126,7 @@ if (isset($_POST['selectrow'])) {
 }
 // -----------sentbox-------------
 if (isset($_POST['sendItem'])) {
-  $sql = "SELECT * FROM userdata  WHERE from_email='$email' and (trashstatus ='0' and draftstatus='0') ORDER BY id desc";
+  $sql = "SELECT * FROM userdata  WHERE from_email='$email' and (from_trash ='0' and draft='0') ORDER BY id desc";
 
   $result = $obj->conn->query($sql);
 
@@ -142,7 +141,8 @@ if (isset($_POST['sendItem'])) {
 }
 // --------------draft---------------
 if (isset($_POST['draftitem'])) {
-  $sql = "SELECT * FROM userdata  WHERE from_email='$email' and draftstatus ='1' ORDER BY id desc";
+
+  $sql = "SELECT * FROM userdata  WHERE from_email='$email' and (from_trash ='0' and draft='1') ORDER BY id desc";
 
   $result = $obj->conn->query($sql);
 
@@ -155,8 +155,8 @@ if (isset($_POST['draftitem'])) {
 }
 
 // -----------trash-------------
-if (isset($_POST['sendItemd'])) {
-  $sql = "SELECT * FROM userdata  WHERE (from_email='$email' or to_email='$email' or cc_email='$email' or bcc_email='$email') and trashstatus ='1' ORDER BY id desc";
+if (isset($_POST['trashitem'])) {
+  $sql = "SELECT * FROM userdata  WHERE (from_email='$email' and from_trash='1') or (to_email='$email' and to_trash='1') or (cc_email='$email' and cc_trash='1') or (bcc_email='$email' and bcc_trash='1') ORDER BY id desc";
 
   $result = $obj->conn->query($sql);
 
@@ -171,7 +171,9 @@ if (isset($_POST['sendItemd'])) {
 }
 // --------------------inbox----------
 if (isset($_POST['inboxitem'])) {
-  $sql = "SELECT * FROM userdata  WHERE (to_email='$email' or cc_email='$email' or bcc_email='$email') and  trashstatus='0' ORDER BY id desc ";
+  // $sql = "SELECT * FROM userdata  WHERE (to_email='$email' or cc_email='$email' or bcc_email='$email') and  draft='0' ORDER BY id desc ";
+  $sql = "SELECT * FROM userdata  WHERE (to_email='$email'and to_trash='0' or cc_email='$email' and cc_trash='0' or bcc_email='$email' and bcc_trash='0') and  draft='0' ORDER BY id desc ";
+  
 
   $result = $obj->conn->query($sql);
 
@@ -189,6 +191,7 @@ if (isset($_POST['inboxitem'])) {
 if (isset($_POST['ids'])) {
   $IDD = $_POST['ids'];
   $sql = "UPDATE userdata SET trashstatus = '1' WHERE id='$IDD'";
+  // echo $sql; die(" ttttt");
   if ($obj->insert($sql)) {
     echo json_encode([
       'response' => true,
@@ -206,7 +209,7 @@ if (isset($_POST['ids'])) {
 if (isset($_POST['searchitem'])) {
   $IDD = $_POST['serchtext'];
 
-  $sql = "SELECT * FROM userdata WHERE subject like '%$IDD%' and (from_email='$email' or to_email='$email' and trashstatus ='0')  ORDER BY id desc";
+  $sql = "SELECT * FROM userdata WHERE subject like '%$IDD%' and (from_email='$email' and from_trash='0' or to_email='$email' and to_trash='0' or cc_email='$email' and cc_trash='0' or bcc_email='$email' and bcc_trash='0') and  draft='0' ORDER BY id desc";
 
   $result = $obj->conn->query($sql);
 

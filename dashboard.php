@@ -454,7 +454,7 @@ if (!isset($_SESSION['Email'])) {
                             } else {
                                 $("#table-data").empty();
                                 $.each(data, function(index, value) {
-                                    $("#table-data").append("<tr data-id=" + value.id + "><td><input type='checkbox' class='check' data-id=" + value.id + "></td><td>" + value.to_email + "</td><td>" + value.subject + "</td><td>" + value.time + "</td></tr>");
+                                    $("#table-data").append("<tr data-id=" + value.id + "><td><input type='checkbox' class='checksend' data-id=" + value.id + "></td><td>" + value.to_email + "</td><td>" + value.subject + "</td><td>" + value.time + "</td></tr>");
                                 });
                             }
 
@@ -473,7 +473,7 @@ if (!isset($_SESSION['Email'])) {
                         type: "POST",
                         dataType: "JSON",
                         data: {
-                            sendItemd: true
+                            trashitem: true
                         },
                         success: function(data) {
                             if (data.status == false) {
@@ -501,7 +501,8 @@ if (!isset($_SESSION['Email'])) {
                         type: "POST",
                         dataType: "JSON",
                         data: {
-                            draftitem: true
+                            draftitem: true,
+
                         },
                         success: function(data) {
                             if (data.status == false) {
@@ -518,7 +519,7 @@ if (!isset($_SESSION['Email'])) {
                 });
 
                 // ----------------------delete buttons------------
-                $(document).on("click", ".check", function(e) {
+                $(document).on("click", ".checksend ", function(e) {
                     e.stopPropagation();
                     var checke = $(this).is(':checked');
                     if (checke) {
@@ -528,6 +529,7 @@ if (!isset($_SESSION['Email'])) {
                     }
                     var iddata = $(this).attr("data-id");
                     $("#del").click(function() {
+                        console.log(iddata);
                         $.ajax({
                             url: "fetch.php",
                             dataType: "json",
@@ -538,9 +540,10 @@ if (!isset($_SESSION['Email'])) {
                                 ids: iddata
                             },
                             success: function(data) {
+                                console.log(data);
                                 if (data['response']) {
-                                    alert(data['message']);
                                     $("#del,#ru").hide();
+                                    
 
 
 
