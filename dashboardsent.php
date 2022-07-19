@@ -15,7 +15,7 @@ if (!isset($_SESSION['Email'])) {
     <link href="./scsscode/mainpage.css" rel="stylesheet">
     <title>inbox</title>
     <!-- newcss -->
-
+  
 
     <!-- 00000000000000 -->
 </head>
@@ -77,7 +77,7 @@ if (!isset($_SESSION['Email'])) {
                 </div>
                 <div class="pt-3">
                     <div class="card">
-                        <h5 class="card-header" id="heading">Inbox</h5>
+                        <h5 class="card-header" id="heading">Sent Item</h5>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table">
@@ -164,31 +164,34 @@ if (!isset($_SESSION['Email'])) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
-            $("tr").show();
-            $("#paggi").show();
-            jQuery.ajax({
-                url: "fetch.php",
-                type: "POST",
-                dataType: "JSON",
-                data: {
-                    inboxitem: true
-                },
-                success: function(data) {
-                    if (data.status == false) {
-                        $("#table-data").html("<h1>" + data.msg + "</h1>");
-                    } else {
-                        $("#table-data").empty();
-                        $.each(data, function(index, value) {
+           
+                $("tr").show();
+                $("#paggi").show();
+                $("#heading").html("Send Item");
+                // --------------------------------------------------
+                //    alert("hello");
+                jQuery.ajax({
+                    url: "fetch.php",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        sendItem: true
+                    },
+                    success: function(data) {
+                        if (data.status == false) {
+                            $("#table-data").html("<h1>" + data.msg + "</h1>");
+                        } else {
+                            $("#table-data").empty();
+                            $.each(data, function(index, value) {
+                                $("#table-data").append("<tr data-id=" + value.id + "><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" + value.id + "></td><td class='inboxclass'>" + value.from_email + "</td><td class='inboxclass'>" + value.subject + "</td><td class='inboxclass'>" + value.time + "</td></tr>");
+                            });
+                        }
 
-                            $("#table-data").append("<tr data-id=" + value.id + "><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" + value.id + "></td><td class='inboxclass'>" + value.from_email + "</td><td class='inboxclass'>" + value.subject + "</td><td class='inboxclass'>" + value.time + "</td></tr>");
-                        });
                     }
-
-                }
-            });
+                });
 
             // -----------------------open mail-------------
-            $(document).on("click", ".inboxclass", function(e) {
+            $(document).on("click", "tr", function(e) {
 
                 e.preventDefault(e);
 
@@ -197,7 +200,7 @@ if (!isset($_SESSION['Email'])) {
                 $("tr").hide();
                 $("#paggi").hide();
 
-                var trval = $(this).parent().attr('data-id');
+                var trval = $(this).attr('data-id');
                 jQuery.ajax({
 
                     url: "fetch.php",
@@ -304,7 +307,7 @@ if (!isset($_SESSION['Email'])) {
                     success: function(data) {
                         if (data['response']) {
                             alert(data['message'])
-                           
+                          
                         } else {
                             $("#" + data['error_id']).css('border', '1px solid red')
 
@@ -346,7 +349,6 @@ if (!isset($_SESSION['Email'])) {
                         if (data['response']) {
                             alert(data['message'])
                             location. reload()
-                          
                         } else {
                             // $("#" + data['error_id']).html(data['message'])
                             $("#" + data['error_id']).css('border', '1px solid red')
@@ -361,7 +363,9 @@ if (!isset($_SESSION['Email'])) {
                     }
                 });
             });
-
+            
+            
+            
             // ----------------------delete buttons------------
             $(document).on("click", ".checkinbox ", function(e) {
                 e.stopPropagation();
@@ -382,8 +386,8 @@ if (!isset($_SESSION['Email'])) {
                     type: "POST",
 
                     data: {
-                        inbox_value:true,
-                        inbox_delete: iddata
+                         Send_value:true,
+                        send_delete: iddata
                     },
                     success: function(data) {
                         console.log(data);
@@ -395,6 +399,7 @@ if (!isset($_SESSION['Email'])) {
                     }
                 });
             });
+
 
         });
     </script>

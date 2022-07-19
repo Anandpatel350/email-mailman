@@ -171,7 +171,7 @@ if (!isset($_SESSION['Email'])) {
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    inboxitem: true
+                    draftitem: true
                 },
                 success: function(data) {
                     if (data.status == false) {
@@ -382,8 +382,8 @@ if (!isset($_SESSION['Email'])) {
                     type: "POST",
 
                     data: {
-                        inbox_value:true,
-                        inbox_delete: iddata
+                        draft_value:true,
+                        draft_delete: iddata
                     },
                     success: function(data) {
                         console.log(data);

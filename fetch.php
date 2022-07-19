@@ -156,7 +156,7 @@ if (isset($_POST['draftitem'])) {
 
 // -----------trash-------------
 if (isset($_POST['trashitem'])) {
-  $sql = "SELECT * FROM userdata  WHERE (from_email='$email' and from_trash='1') or (to_email='$email' and to_trash='1') or (cc_email='$email' and cc_trash='1') or (bcc_email='$email' and bcc_trash='1') ORDER BY id desc";
+  $sql = "SELECT * FROM userdata  WHERE (from_email='$email' and from_trash='1') or (to_email='$email' and to_trash='1') or (cc_email='$email' and cc_trash='1') or (bcc_email='$email' and bcc_trash='1') ORDER BY time desc";
 
   $result = $obj->conn->query($sql);
 
@@ -187,11 +187,55 @@ if (isset($_POST['inboxitem'])) {
   }
 }
 
-// -----------------------------------checkbox------------------------
-if (isset($_POST['ids'])) {
-  $IDD = $_POST['ids'];
-  $sql = "UPDATE userdata SET trashstatus = '1' WHERE id='$IDD'";
-  // echo $sql; die(" ttttt");
+// -----------------------------------inbox delete------------------------
+if (isset($_POST['inbox_value'])) {
+  $IDD = $_POST['inbox_delete'];
+  $qry="select * from userdata where id='$IDD'";
+$result=$obj->fetchdata($qry);
+if($email==$result['to_email']){
+  $sql = "UPDATE userdata SET to_trash  = '1' WHERE id='$IDD'";
+} elseif($email==$result['cc_email'])
+{
+  $sql = "UPDATE userdata SET cc_trash  = '1' WHERE id='$IDD'";
+}
+elseif($email==$result['bcc_email'])
+{
+  $sql = "UPDATE userdata SET bcc_trash  = '1' WHERE id='$IDD'";
+}
+  if ($obj->insert($sql)) {
+    echo json_encode([
+      'response' => true,
+      'message' => "selected value deleted",
+    ]);
+  } else {
+    echo json_encode([
+      'response' => false,
+      'message' => "selected value not deleted",
+
+    ]);
+  }
+}
+// ------------send delete-------------
+if (isset($_POST['Send_value'])) {
+  $IDD = $_POST['send_delete'];
+  $sql = "UPDATE userdata SET from_trash  = '1' WHERE id='$IDD'";
+  if ($obj->insert($sql)) {
+    echo json_encode([
+      'response' => true,
+      'message' => "selected value deleted",
+    ]);
+  } else {
+    echo json_encode([
+      'response' => false,
+      'message' => "selected value not deleted",
+
+    ]);
+  }
+}
+// ----------draft delete-----------
+if (isset($_POST['draft_value'])) {
+  $IDD = $_POST['draft_delete'];
+  $sql = "UPDATE userdata SET draft = '1' and from_trash='1' WHERE id='$IDD'";
   if ($obj->insert($sql)) {
     echo json_encode([
       'response' => true,

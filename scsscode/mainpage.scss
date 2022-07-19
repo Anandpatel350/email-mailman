@@ -1,13 +1,83 @@
-body{
+body {
     margin: 0;
     padding: 0;
+    /* font-family: "Lato", sans-serif; */
 }
-.SideBar{
-    position: fixed;
-    background-color:#198754;
-    top: 0;
-    bottom: 0;
-    width: 25%;
-    padding-top: 40px;
-    padding-left: 110px;
+
+.sidebar {
+    margin: 0;
+    padding: 0;
+    width: 400px;
+    background-color: #f1f1f1;
+    position: absolute;
+    height: 100%;
+    overflow: auto;
+}
+
+.sidebar a {
+    display: block;
+    color: black;
+    padding: 16px;
+    text-decoration: none;
+    text-align: center;
+}
+
+
+
+.sidebar a.active {
+    background-color: #04AA6D;
+    color: white;
+}
+
+
+.sidebar a:hover:not(.buttonq) {
+
+    color: red;
+}
+
+div.content {
+    margin-left: 430px;
+    margin-top: 50px;
+    padding: 1px 16px;
+    height: auto;
+    /* width: 70%; */
+}
+
+@media screen and (max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar a {
+        float: left;
+    }
+
+    div.content {
+        margin-left: 0;
+
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .sidebar a {
+        text-align: center;
+        float: none;
+    }
+}
+
+@media screen and (max-width: 838px) {
+    .navbar .container-fluid.navbar-cont{
+        display: block;
+    }
+    .navbar-brand{
+        margin: 0;
+        text-align: center;
+    }
+    .dropdown .d-flex{
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
 }
