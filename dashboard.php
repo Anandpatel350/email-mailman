@@ -34,9 +34,7 @@ if (!isset($_SESSION['Email'])) {
                 <div class="d-flex">
                     <!-- username -->
                     <button class="btn btn-outline-dark me-3" type="submit"><?php echo $_SESSION['Email']; ?></button>
-                    <?php
-                    $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';
-                    ?>
+                    <?php $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';?>
 
                     <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -80,33 +78,12 @@ if (!isset($_SESSION['Email'])) {
                         <h5 class="card-header" id="heading">Inbox</h5>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table">
-                                    <div id="table_head">
-                                        <tr>
-                                            <th></th>
-                                            <th>@mailman.com</th>
-                                            <th>subject</th>
-                                            <th>YY/MM-DD</th>
+                                <div id=table-data></div>
 
-                                        </tr>
-                                    </div>
-                                    <tbody id="table-data">
-
-
-                                    </tbody>
-                                </table>
 
 
                             </div>
-                            <nav aria-label="Page navigation example " id="paggi">
-                                <ul class="pagination justify-content-center">
-                                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                </ul>
-                            </nav>
+
                         </div>
                     </div>
                 </div>
@@ -164,27 +141,35 @@ if (!isset($_SESSION['Email'])) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
-            $("tr").show();
-            $("#paggi").show();
-            jQuery.ajax({
-                url: "fetch.php",
-                type: "POST",
-                dataType: "JSON",
-                data: {
-                    inboxitem: true
-                },
-                success: function(data) {
-                    if (data.status == false) {
-                        $("#table-data").html("<h1>" + data.msg + "</h1>");
-                    } else {
-                        $("#table-data").empty();
-                        $.each(data, function(index, value) {
 
-                            $("#table-data").append("<tr data-id=" + value.id + "><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" + value.id + "></td><td class='inboxclass'>" + value.from_email + "</td><td class='inboxclass'>" + value.subject + "</td><td class='inboxclass'>" + value.time + "</td></tr>");
-                        });
+            function loadTable(page) {
+                jQuery.ajax({
+                    url: "fetch.php",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        'inboxitem': true,
+                        'page_no': page
+                    },
+                    success: function(data) {
+                        if (data.status == false) {
+                            $("#table-data").html("<h1>" + data.massege + "</h1>");
+                        } else {
+                            // $("#table-d  ata").empty();
+                            $("#table-data").html(data);
+                        }
+
                     }
+                });
+            }
+            loadTable();
+            // -----------paggination code-----
+            $(document).on("click", "#paggi ul .page-link", function(e) {
+                e.preventDefault();
+                var page_id = $(this).attr('id');
+                console.log(page_id)
+                loadTable(page_id);
 
-                }
             });
 
             // -----------------------open mail-------------
@@ -193,10 +178,6 @@ if (!isset($_SESSION['Email'])) {
                 e.preventDefault(e);
 
                 $("#table-data").html("");
-                $("#heading").html("mail box");
-                $("tr").hide();
-                $("#paggi").hide();
-
                 var trval = $(this).parent().attr('data-id');
                 jQuery.ajax({
 
@@ -247,32 +228,45 @@ if (!isset($_SESSION['Email'])) {
             //-----------------------search bar------------
             $("#search-item").on("keyup", function(e) {
                 e.preventDefault(e);
-                $("#heading").html("Search Items");
-                var searchval = $("#search-item").val();
-                jQuery.ajax({
+                loadTablesearch();
 
-                    url: "fetch.php",
-                    type: "POST",
-                    dataType: "JSON",
-                    data: {
-                        'searchitem': true,
-                        'serchtext': searchval
+                function loadTablesearch(page) {
+                    $("#heading").html("Search Items");
+                    var searchval = $("#search-item").val();
+                    jQuery.ajax({
+
+                        url: "fetch.php",
+                        type: "POST",
+                        dataType: "JSON",
+                        data: {
+                            'searchitem': true,
+                            'serchtext': searchval,
+                            'page_no': page
 
 
-                    },
-                    success: function(data) {
-                        if (data.status == false) {
-                            $("#table-data").html("<h1>" + data.msg + "</h1>");
-                        } else {
-                            $("#table-data").empty();
-                            $.each(data, function(index, value) {
-                                $("#table-data").append("<tr data-id=" + value.id + "><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" + value.id + "></td><td class='inboxclass'>" + value.from_email + "</td><td class='inboxclass'>" + value.subject + "</td><td class='inboxclass'>" + value.time + "</td></tr>");
-                            });
+                        },
+                        success: function(data) {
+                            if (data.status == false) {
+                                $("#table-data").html("<h1>" + data.massege + "</h1>");
+                            } else {
+                                // $("#table-d  ata").empty();
+                                $("#table-data").html(data);
+                            }
+
                         }
+                    });
+                }
+                // -----------paggination code-----
+                $(document).on("click", "#paggii ul .page-link", function(e) {
+                    e.preventDefault();
+                    var page_id = $(this).attr('id');
+                    console.log(page_id)
+                    loadTablesearch(page_id);
 
-                    }
                 });
+
             });
+
 
 
             // ---------------------draft auto saved------
@@ -304,7 +298,7 @@ if (!isset($_SESSION['Email'])) {
                     success: function(data) {
                         if (data['response']) {
                             alert(data['message'])
-                           
+
                         } else {
                             $("#" + data['error_id']).css('border', '1px solid red')
 
@@ -315,7 +309,7 @@ if (!isset($_SESSION['Email'])) {
                     }
                 });
             });
-            // ------------
+            // ------------compose---------------
 
             $("#submit1").click(function(e) {
                 e.preventDefault(e);
@@ -345,16 +339,11 @@ if (!isset($_SESSION['Email'])) {
                     success: function(data) {
                         if (data['response']) {
                             alert(data['message'])
-                            location. reload()
-                          
-                        } else {
-                            // $("#" + data['error_id']).html(data['message'])
-                            $("#" + data['error_id']).css('border', '1px solid red')
-                            // const myTimeout = setTimeout(myGreeting, 8000);
+                            location.reload()
 
-                            // function myGreeting() {
-                            //     $("#" + data['error_id']).css('border-color', '#ced4da')
-                            // }
+                        } else {
+                            $("#" + data['error_id']).css('border', '1px solid red')
+
 
                         }
 
@@ -382,14 +371,14 @@ if (!isset($_SESSION['Email'])) {
                     type: "POST",
 
                     data: {
-                        inbox_value:true,
+                        inbox_value: true,
                         inbox_delete: iddata
                     },
                     success: function(data) {
                         console.log(data);
                         if (data['response']) {
                             $("#del,#ru").hide();
-                            location. reload();
+                            location.reload();
 
                         }
                     }
@@ -401,3 +390,11 @@ if (!isset($_SESSION['Email'])) {
 </body>
 
 </html>
+
+
+
+
+
+
+
+
