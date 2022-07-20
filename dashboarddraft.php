@@ -72,8 +72,7 @@ if (!isset($_SESSION['Email'])) {
         <div class="col-sm-12">
             <div class="container">
                 <div class="d-flex ">
-                    <div><button class="btn btn-outline-dark mx-5" style="display:none" id="del" type="submit">Delete</button></div>
-                    <div><button class="btn btn-outline-dark " style="display:none" id="ru" type="submit">Read/Unread</button></div>
+                    <div><button class="btn btn-outline-dark mx-2" style="display:none" id="del" type="submit">Delete</button></div>
                 </div>
                 <div class="pt-3">
                     <div class="card">
@@ -317,7 +316,6 @@ if (!isset($_SESSION['Email'])) {
 
             $("#submit1").click(function(e) {
                 e.preventDefault(e);
-                //    alert("hello");
                 var tonameval = $("#toname").val();
                 var ccnameval = $("#ccname").val();
                 var bccnameval = $("#bccname").val();
@@ -365,9 +363,9 @@ if (!isset($_SESSION['Email'])) {
                 e.stopPropagation();
                 var checke = $(this).is(':checked');
                 if (checke) {
-                    $("#del,#ru").show();
+                    $("#del").show();
                 } else {
-                    $("#del,#ru").hide();
+                    $("#del").hide();
                 }
                 // var iddata = $(this).attr("data-id");
             });

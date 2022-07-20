@@ -15,7 +15,7 @@ if (!isset($_SESSION['Email'])) {
     <link href="./scsscode/mainpage.css" rel="stylesheet">
     <title>inbox</title>
     <!-- newcss -->
-  
+
 
     <!-- 00000000000000 -->
 </head>
@@ -40,8 +40,7 @@ if (!isset($_SESSION['Email'])) {
 
                     <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                            <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
-                            <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
+                            <div><button class="btn btn-outline-dark mx-2" style="display:none" id="del" type="submit">Delete</button></div>
                         </ul>
 
                     </div>
@@ -96,7 +95,7 @@ if (!isset($_SESSION['Email'])) {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="sideclose"></button>
                     </div>
                     <div class="modal-body">
-                        <form class="p-2" id="fData">   
+                        <form class="p-2" id="fData">
                             <div class="mb-2">
                                 <label for="recipient-name" class="col-form-label">To:</label>
                                 <input type="email" class="form-control" id="toname">
@@ -298,7 +297,7 @@ if (!isset($_SESSION['Email'])) {
                     success: function(data) {
                         if (data['response']) {
                             alert(data['message'])
-                         
+
                         } else {
                             $("#" + data['error_id']).css('border', '1px solid red')
 
@@ -339,8 +338,8 @@ if (!isset($_SESSION['Email'])) {
                     success: function(data) {
                         if (data['response']) {
                             alert(data['message'])
-                            location. reload()
-                           
+                            location.reload()
+
                         } else {
                             $("#" + data['error_id']).css('border', '1px solid red')
 
@@ -354,9 +353,9 @@ if (!isset($_SESSION['Email'])) {
                 e.stopPropagation();
                 var checke = $(this).is(':checked');
                 if (checke) {
-                    $("#del,#ru").show();
+                    $("#del,#Read,#Unread").show();
                 } else {
-                    $("#del,#ru").hide();
+                    $("#del,#Read,#Unread").hide();
                 }
                 // var iddata = $(this).attr("data-id");
             });
@@ -376,7 +375,7 @@ if (!isset($_SESSION['Email'])) {
                         console.log(data);
                         if (data['response']) {
                             $("#del,#ru").hide();
-                            location. reload();
+                            location.reload();
 
                         }
                     }
