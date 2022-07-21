@@ -132,6 +132,9 @@ if (!isset($_SESSION['Email'])) {
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closed">Close</button>
                         <button type="button" class="btn btn-primary" id="submit1">Send message</button>
                     </div>
+                    <!-- hiddin value-->
+                    <input type="hidden" id="page_number" value="1">
+
                 </div>
             </div>
         </div>
@@ -141,7 +144,9 @@ if (!isset($_SESSION['Email'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
+       
         $(document).ready(function() {
+            
 
             function loadTable(page) {
                 jQuery.ajax({
@@ -168,10 +173,13 @@ if (!isset($_SESSION['Email'])) {
             $(document).on("click", "#paggi ul .page-link", function(e) {
                 e.preventDefault();
                 var page_id = $(this).attr('id');
-                console.log(page_id)
+                $("#page_number").val(page_id);
+                
                 loadTable(page_id);
 
             });
+
+            // console.log("cccccccc ---     "+    $("#page_number").val());-------------------------
 
             // -----------------------open mail-------------
             $(document).on("click", ".inboxclass", function(e) {
@@ -261,7 +269,6 @@ if (!isset($_SESSION['Email'])) {
                 $(document).on("click", "#paggii ul .page-link", function(e) {
                     e.preventDefault();
                     var page_id = $(this).attr('id');
-                    console.log(page_id)
                     loadTablesearch(page_id);
 
                 });
@@ -340,7 +347,8 @@ if (!isset($_SESSION['Email'])) {
                     success: function(data) {
                         if (data['response']) {
                             alert(data['message'])
-                            location.reload()
+                            var x=$("#page_number").val();
+                            loadTable(x);
 
                         } else {
                             $("#" + data['error_id']).css('border', '1px solid red')
@@ -376,15 +384,61 @@ if (!isset($_SESSION['Email'])) {
                         inbox_delete: iddata
                     },
                     success: function(data) {
-                        console.log(data);
+                        // console.log(data);
                         if (data['response']) {
-                            $("#del,#ru").hide();
-                            location.reload();
+                            $("#del,#Read,#Unread").hide();
+                            var x=$("#page_number").val();
+                            loadTable(x);
 
                         }
                     }
                 });
             });
+            $(document).on("click", "#Unread", function(e) {
+                e.preventDefault(e);
+                let iddata = jQuery('input[name="inboxtable"]:checked').attr('data-id');
+                // console.log(iddata);
+                $.ajax({
+                    url: "fetch.php",
+                    dataType: "json",
+                    type: "POST",
+
+                    data: { 
+                        inbox_value_unread: true,
+                        inbox_delete_unread: iddata
+                    },
+                    success: function(data) {
+                        if (data['response']) {
+                            $("#del,#Read,#Unread").hide();
+                            var x=$("#page_number").val();
+                            loadTable(x);
+
+                        }
+                    }
+                });
+            });
+            $(document).on("click", "#Read", function(e) {
+                e.preventDefault(e);
+                let iddata = jQuery('input[name="inboxtable"]:checked').attr('data-id');
+                $.ajax({
+                    url: "fetch.php",
+                    dataType: "json",
+                    type: "POST",
+
+                    data: { 
+                        inbox_value_Read: true,
+                        inbox_delete_Read: iddata
+                    },
+                    success: function(data) {
+                        if (data['response']) {
+                            $("#del,#Read,#Unread").hide();
+                            var x=$("#page_number").val();
+                            loadTable(x);
+                        }
+                    }
+                });
+            });
+
 
         });
     </script>

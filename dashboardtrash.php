@@ -40,7 +40,8 @@ if (!isset($_SESSION['Email'])) {
 
                     <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                            <div><button class="btn btn-outline-dark mx-2" style="display:none" id="del" type="submit">Delete</button></div>
+                            <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
+                            <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
                         </ul>
 
                     </div>
@@ -71,8 +72,8 @@ if (!isset($_SESSION['Email'])) {
         <div class="col-sm-12">
             <div class="container">
                 <div class="d-flex ">
-                    <div><button class="btn btn-outline-dark mx-5" style="display:none" id="del" type="submit">Delete</button></div>
-                    <div><button class="btn btn-outline-dark " style="display:none" id="ru" type="submit">Read/Unread</button></div>
+                    <div><button class="btn btn-outline-dark " style="display:none" id="del" type="submit">Delete</button></div>
+                    <div><button class="btn btn-outline-dark ms-3" style="display:none" id="Restore" type="submit">Restore</button></div>
                 </div>
                 <div class="pt-3">
                     <div class="card">
@@ -132,6 +133,8 @@ if (!isset($_SESSION['Email'])) {
             </div>
         </div>
     </div>
+    <!-- hidden inpute -->
+    <input type="hidden" id="page_number" value="1">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -338,7 +341,8 @@ if (!isset($_SESSION['Email'])) {
                     success: function(data) {
                         if (data['response']) {
                             alert(data['message'])
-                            location.reload()
+                            var x = $("#page_number").val();
+                            loadTable(x);
 
                         } else {
                             $("#" + data['error_id']).css('border', '1px solid red')
@@ -349,17 +353,16 @@ if (!isset($_SESSION['Email'])) {
                 });
             });
             // ----------------------delete buttons------------
-            $(document).on("click", ".checkinbox ", function(e) {
+            $(document).on("click", ".checkinbox", function(e) {
                 e.stopPropagation();
                 var checke = $(this).is(':checked');
                 if (checke) {
-                    $("#del,#Read,#Unread").show();
+                    $("#del,#Restore").show();
                 } else {
-                    $("#del,#Read,#Unread").hide();
+                    $("#del,#Restore").hide();
                 }
-                // var iddata = $(this).attr("data-id");
             });
-            $(document).on("click", "#del ", function(e) {
+            $(document).on("click", "#del", function(e) {
                 e.preventDefault(e);
                 let iddata = jQuery('input[name="inboxtable"]:checked').attr('data-id');
                 $.ajax({
@@ -368,14 +371,36 @@ if (!isset($_SESSION['Email'])) {
                     type: "POST",
 
                     data: {
-
-                        inbox_delete: iddata
+                        trash_value_delete: true,
+                        trash_delete: iddata
                     },
                     success: function(data) {
-                        console.log(data);
                         if (data['response']) {
-                            $("#del,#ru").hide();
-                            location.reload();
+                            $("#del,#Restore").hide();
+                            var x = $("#page_number").val();
+                            loadTable(x);
+
+                        }
+                    }
+                });
+            });
+            $(document).on("click", "#Restore", function(e) {
+                e.preventDefault(e);
+                let iddata = jQuery('input[name="inboxtable"]:checked').attr('data-id');
+                $.ajax({
+                    url: "fetch.php",
+                    dataType: "json",
+                    type: "POST",
+
+                    data: {
+                        trash_value_restore: true,
+                        trash_restore: iddata
+                    },
+                    success: function(data) {
+                        if (data['response']) {
+                            $("#del,#Restore").hide();
+                            var x = $("#page_number").val();
+                            loadTable(x);
 
                         }
                     }

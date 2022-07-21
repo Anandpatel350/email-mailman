@@ -125,6 +125,8 @@ if (isset($_POST['selectrow'])) {
   $sql = "SELECT * FROM userdata  WHERE id='$vaue' ORDER BY id desc";
 
   $result = $obj->conn->query($sql);
+  $readqry = "UPDATE userdata SET read_unread = '0' WHERE id='$vaue'";
+  $obj->insert($readqry);
   $output = $result->fetch_all(MYSQLI_ASSOC);
   echo json_encode($output);
 }
@@ -220,7 +222,7 @@ if (isset($_POST['trashitem'])) {
   }
   $ofset = ($page - 1) * $limit_ofset;
 
-  $sql = "SELECT * FROM userdata  WHERE (from_email='$email' and from_trash='1') or (to_email='$email' and to_trash='1') or (cc_email='$email' and cc_trash='1') or (bcc_email='$email' and bcc_trash='1') ORDER BY time desc limit {$ofset},{$limit_ofset}";
+  $sql = "SELECT * FROM userdata  WHERE (from_email='$email' and from_trash='1' and from_delete='0') or (to_email='$email' and to_trash='1' and to_delete='0' ) or (cc_email='$email' and cc_trash='1' and cc_delete='0' ) or (bcc_email='$email' and bcc_trash='1' and bcc_delete='0' ) ORDER BY time desc limit {$ofset},{$limit_ofset}";
 
   $result = $obj->conn->query($sql);
   $output = $result->fetch_all(MYSQLI_ASSOC);
@@ -231,7 +233,7 @@ if (isset($_POST['trashitem'])) {
   }
   $datavalue .= "</tbody> </table>";
 
-  $sql_total = "SELECT * FROM userdata  WHERE (from_email='$email' and from_trash='1') or (to_email='$email' and to_trash='1') or (cc_email='$email' and cc_trash='1') or (bcc_email='$email' and bcc_trash='1')";
+  $sql_total = "SELECT * FROM userdata  WHERE (from_email='$email' and from_trash='1' and from_delete='0') or (to_email='$email' and to_trash='1' and to_delete='0' ) or (cc_email='$email' and cc_trash='1' and cc_delete='0' ) or (bcc_email='$email' and bcc_trash='1' and bcc_delete='0' )";
   $total_record = $obj->conn->query($sql_total);
   $total_numrow = $total_record->num_rows;
   $total_pages = ceil($total_numrow / $limit_ofset);
@@ -267,7 +269,7 @@ if (isset($_POST['inboxitem'])) {
   $datavalue = '';
   $datavalue .= " <table class='table'>  <div id='table_head'> <tr><th></th> <th>From</th><th>subject</th><th>YY/MM-DD</th> </tr></div><tbody >";
   foreach ($output as $k => $v) {
-    $datavalue .= "<tr data-id=" . $v['id'] . "><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" . $v['id'] . "></td><td class='inboxclass'>" . $v['from_email'] . "</td><td class='inboxclass'>" .  $a = (!empty($v['subject']) ? $v['subject'] : '(No Subject)'). "</td><td class='inboxclass'>" . $v['time'] . "</td></tr>";
+    $datavalue .= "<tr style=" . (!empty($v['read_unread']) ? 'font-weight:500' : 'font-weight:350') ." data-id=" . $v['id'] ."><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" . $v['id'] . "></td><td class='inboxclass'>" . $v['from_email'] . "</td><td class='inboxclass'>" .  $a = (!empty($v['subject']) ? $v['subject'] : '(No Subject)'). "</td><td class='inboxclass'>" . $v['time'] . "</td></tr>";
   }
   $datavalue .= "</tbody> </table>";
 
@@ -297,11 +299,12 @@ if (isset($_POST['inbox_value'])) {
   $IDD = $_POST['inbox_delete'];
   $qry = "select * from userdata where id='$IDD'";
   $result = $obj->fetchdata($qry);
-  if ($email == $result['to_email']) {
+  if(strtolower($email) == strtolower($result['to_email'])) {
     $sql = "UPDATE userdata SET to_trash  = '1' WHERE id='$IDD'";
-  } elseif ($email == $result['cc_email']) {
+   
+  } else if(strtolower($email) == strtolower($result['cc_email'])) {
     $sql = "UPDATE userdata SET cc_trash  = '1' WHERE id='$IDD'";
-  } elseif ($email == $result['bcc_email']) {
+  } else if(strtolower($email) == strtolower($result['bcc_email'])) {
     $sql = "UPDATE userdata SET bcc_trash  = '1' WHERE id='$IDD'";
   }
   if ($obj->insert($sql)) {
@@ -317,6 +320,67 @@ if (isset($_POST['inbox_value'])) {
     ]);
   }
 }
+// ----------------trash item delete-----------
+if (isset($_POST['trash_value_delete'])) {
+  $IDD = $_POST['trash_delete'];
+  $qry = "select * from userdata where id='$IDD'";
+  $result = $obj->fetchdata($qry);
+  // print_r($result);die();
+  if(strtolower($email) == strtolower($result['from_email'])) {
+    $sql = "UPDATE userdata SET from_delete  = '1' WHERE id='$IDD'";
+   
+  }else if(strtolower($email) == strtolower($result['to_email'])) {
+    $sql = "UPDATE userdata SET to_delete  = '1' WHERE id='$IDD'";
+   
+  } else if(strtolower($email) == strtolower($result['cc_email'])) {
+    $sql = "UPDATE userdata SET cc_delete  = '1' WHERE id='$IDD'";
+  } else if(strtolower($email) == strtolower($result['bcc_email'])) {
+    $sql = "UPDATE userdata SET bcc_delete  = '1' WHERE id='$IDD'";
+  }
+  if ($obj->insert($sql)) {
+    echo json_encode([
+      'response' => true,
+      'message' => "selected value deleted",
+    ]);
+  } else {
+    echo json_encode([
+      'response' => false,
+      'message' => "selected value not deleted",
+
+    ]);
+  }
+}
+// -------------trash_restore-------------------
+if (isset($_POST['trash_value_restore'])) {
+  $IDD = $_POST['trash_restore'];
+  $qry = "select * from userdata where id='$IDD'";
+  $result = $obj->fetchdata($qry);
+  if(strtolower($email) == strtolower($result['from_email'])) {
+    $sql = "UPDATE userdata SET from_trash  = '0' WHERE id='$IDD'";
+   
+  }else if(strtolower($email) == strtolower($result['to_email'])) {
+    $sql = "UPDATE userdata SET to_trash  = '0' WHERE id='$IDD'";
+   
+  } else if(strtolower($email) == strtolower($result['cc_email'])) {
+    $sql = "UPDATE userdata SET cc_trash  = '0' WHERE id='$IDD'";
+  } else if(strtolower($email) == strtolower($result['bcc_email'])) {
+    $sql = "UPDATE userdata SET bcc_trash  = '0' WHERE id='$IDD'";
+  }
+  if ($obj->insert($sql)) {
+    echo json_encode([
+      'response' => true,
+      'message' => "value Restored",
+    ]);
+  } else {
+    echo json_encode([
+      'response' => false,
+      'message' => "selected value not deleted",
+
+    ]);
+  }
+}
+
+
 // ------------send delete-------------
 if (isset($_POST['Send_value'])) {
   $IDD = $_POST['send_delete'];
@@ -337,7 +401,7 @@ if (isset($_POST['Send_value'])) {
 // ----------draft delete-----------
 if (isset($_POST['draft_value'])) {
   $IDD = $_POST['draft_delete'];
-  $sql = "UPDATE userdata SET draft = '1' and from_trash='1' WHERE id='$IDD'";
+  $sql = "UPDATE userdata SET draft = '1',from_trash='1' WHERE id='$IDD'";
   if ($obj->insert($sql)) {
     echo json_encode([
       'response' => true,
@@ -350,6 +414,22 @@ if (isset($_POST['draft_value'])) {
 
     ]);
   }
+}
+// ------------read unread functinality-----------
+if (isset($_POST['inbox_value_unread']) || isset($_POST['inbox_value_Read'])) {
+  $IDD = (!empty($_POST['inbox_delete_unread']) ? $_POST['inbox_delete_unread'] : $_POST['inbox_delete_Read']);
+if(isset($_POST['inbox_value_unread'])){
+  $sql = "UPDATE userdata SET read_unread = '1' WHERE id='$IDD'";
+} else
+{
+  $sql = "UPDATE userdata SET read_unread = '0' WHERE id='$IDD'"; 
+}
+ if ($obj->insert($sql)) {
+    echo json_encode([
+      'response' => true,
+    ]);
+  } 
+  
 }
 // -----------------------------------searchbar------------------------
 if (isset($_POST['searchitem'])) {
