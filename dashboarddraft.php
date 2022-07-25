@@ -15,7 +15,20 @@ if (!isset($_SESSION['Email'])) {
     <link href="./scsscode/mainpage.css" rel="stylesheet">
     <title>inbox</title>
     <!-- newcss -->
-
+    <style>
+        #popup {
+            display: none;
+            position: absolute;
+            top: 160px;
+            right: 25px;
+            z-index: 9999;
+           text-align: center;
+            width: 500px;
+            height: 100px;
+            padding-top: 40px;
+            color: green;
+        }
+    </style>
 
     <!-- 00000000000000 -->
 </head>
@@ -39,7 +52,7 @@ if (!isset($_SESSION['Email'])) {
                     ?>
 
                     <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <ul class="dropdown-menu mt-2" style="margin-left:80px;" aria-labelledby="dropdownMenu2">
                             <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
                             <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
                         </ul>
@@ -57,7 +70,7 @@ if (!isset($_SESSION['Email'])) {
     <div class="sidebar">
         <div class="mt-3">
             <a>
-                <div><button type="submit" class="btn btn-outline-dark bg-info px-5 " data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Compose</button></div>
+                <div><button type="submit" class="btn btn-outline-dark bg-info px-5 opentoggle" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Compose</button></div>
             </a>
             <a href="dashboard.php" class="">Inbox</a>
             <a href="dashboardsent.php" class="">Send</a>
@@ -79,11 +92,11 @@ if (!isset($_SESSION['Email'])) {
                         <h5 class="card-header" id="heading">Draft</h5>
                         <div class="card-body">
                             <div class="table-responsive">
-                            <div id=table-data></div>
+                                <div id=table-data></div>
 
 
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -135,6 +148,7 @@ if (!isset($_SESSION['Email'])) {
             </div>
         </div>
     </div>
+    <div class="alert alert-secondary " id="popup" role="alert"></div>
     <!-- hidden inpute -->
     <input type="hidden" id="page_number" value="1">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -168,22 +182,26 @@ if (!isset($_SESSION['Email'])) {
             $(document).on("click", "#paggi ul .page-link", function(e) {
                 e.preventDefault();
                 var page_id = $(this).attr('id');
-                console.log(page_id)
+                $("#page_number").val(page_id);
                 loadTable(page_id);
 
             });
+            // ---------------form ipute field null----------
+            $(document).on('click', '.opentoggle', function() {
+                $("#toname").val('');
+                $("#ccname").val('');
+                $("#bccname").val('');
+                $("#subject").val('');
+                $("#message-text").val('');
+                $("#attachment").val('');
+            });
 
-            // -----------------------open mail-------------
+            // -----------------------open mail---------------
             $(document).on("click", ".inboxclass", function(e) {
-
                 e.preventDefault(e);
-
-                $("#table-data").html("");
-                $("#heading").html("mail box");
-                $("tr").hide();
-                $("#paggi").hide();
-
                 var trval = $(this).parent().attr('data-id');
+                $('.opentoggle').click();
+
                 jQuery.ajax({
 
                     url: "fetch.php",
@@ -195,38 +213,21 @@ if (!isset($_SESSION['Email'])) {
 
                     },
                     success: function(data) {
-                        var tab = '';
                         $.each(data, function(index, value) {
-                            tab += '<div class="container">';
-                            tab += '<div class="panel-body">';
-                            tab += '<div class="panel-body">';
-                            tab += '  <div class="row">'
-                            tab += '<div class="col-sm-6">'
-                            tab += ' <h6>from: ' + value.from_email + '</h6><br>'
-                            tab += '   <h6>to: ' + value.to_email + '</h6><br>'
-                            tab += ' </div>'
-                            tab += ' <div class="col-sm-6">'
+                            $("#toname").val(value.to_email);
+                            $("#ccname").val(value.cc_email);
+                            $("#bccname").val(value.bcc_email);
+                            $("#subject").val(value.subject);
+                            $("#message-text").val(value.message);
+                            $("#attachment").val(value.attachment);
 
-
-                            tab += ' <h6>Date:' + value.time + '</h6>'
-                            tab += '</div>'
-                            tab += '</div>'
-                            tab += ' <div class="row">'
-                            tab += '  <div class="col-sm-12" > <h6>Subject:' + value.subject + ' </h6></div><br><br>'
-                            tab += '</div>'
-                            tab += ' <div class="row" >'
-
-                            tab += '<div class="col-sm-12" > <p> message:-  ' + value.message + '</p></div>  '
-                            tab += '</div>'
-                            tab += '</div>'
-                            tab += '</div>'
-                            tab += '</div>'
 
                         });
 
-                        $("#table-data").append(tab);
                     }
                 });
+
+
 
             });
             // ---------------------------------------------
@@ -274,7 +275,7 @@ if (!isset($_SESSION['Email'])) {
 
 
             // ---------------------draft auto saved------
-            $("#closed,#sideclose").click(function(e) {
+            $("#closed").click(function(e) {
                 e.preventDefault(e);
                 //    alert("hello");
                 var tonameval = $("#toname").val();
@@ -301,10 +302,17 @@ if (!isset($_SESSION['Email'])) {
                     contentType: false,
                     success: function(data) {
                         if (data['response']) {
-                            alert(data['message'])
-                            var x=$("#page_number").val();
+                            $('#popup').html('<i>'+data['message']+'<i>');
+                            $('#popup').show(function(){$('#popup').delay(700).fadeOut(700);});
+                            $("#sideclose").click();
+                            $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
+                            $("#toname,#ccname,#bccname").css('border', '');
+                            var x = $("#page_number").val();
                             loadTable(x);
-                           
+                            // soft toggle
+                            
+                            
+
                         } else {
                             $("#" + data['error_id']).css('border', '1px solid red')
 
@@ -319,6 +327,7 @@ if (!isset($_SESSION['Email'])) {
 
             $("#submit1").click(function(e) {
                 e.preventDefault(e);
+                $("#toname,#ccname,#bccname").css('border', '')
                 var tonameval = $("#toname").val();
                 var ccnameval = $("#ccname").val();
                 var bccnameval = $("#bccname").val();
@@ -333,7 +342,7 @@ if (!isset($_SESSION['Email'])) {
                 fData.append("bcc_name", bccnameval);
                 fData.append("sub_name", subnameval);
                 fData.append("text_name", messagetextval);
-                jQuery.ajax({
+                var xt = jQuery.ajax({
                     url: "fetch.php",
                     type: "POST",
                     dataType: "JSON",
@@ -342,19 +351,18 @@ if (!isset($_SESSION['Email'])) {
                     processData: false,
                     contentType: false,
                     success: function(data) {
-                        if (data['response']) {
-                            alert(data['message'])
-                            var x=$("#page_number").val();
-                            loadTable(x);
-                          
+                        if (!data['response']) {
+                            $.each(data.error_value, function(index, value) {
+                                $("#" + value).css('border', '1px solid red')
+                            });
+                            
                         } else {
-                            // $("#" + data['error_id']).html(data['message'])
-                            $("#" + data['error_id']).css('border', '1px solid red')
-                            // const myTimeout = setTimeout(myGreeting, 8000);
-
-                            // function myGreeting() {
-                            //     $("#" + data['error_id']).css('border-color', '#ced4da')
-                            // }
+                            $('#popup').html('<i>'+data['message']+'<i>');
+                            $('#popup').show(function(){$('#popup').delay(700).fadeOut(700);});
+                            $("#sideclose").click();
+                            $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
+                            $("#toname,#ccname,#bccname").css('border', '');
+                           
 
                         }
 
@@ -382,14 +390,14 @@ if (!isset($_SESSION['Email'])) {
                     type: "POST",
 
                     data: {
-                        draft_value:true,
+                        draft_value: true,
                         draft_delete: iddata
                     },
                     success: function(data) {
                         console.log(data);
                         if (data['response']) {
                             $("#del,#ru").hide();
-                            var x=$("#page_number").val();
+                            var x = $("#page_number").val();
                             loadTable(x);
 
                         }

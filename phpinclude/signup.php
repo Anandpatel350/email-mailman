@@ -8,11 +8,11 @@ if (isset($_POST['submit'])) {
   $Fname = $_POST['First_name'];
   $Lname = $_POST['Last_name'];
   $Uname = $_POST['User_Name'];
-  $Ename = $_POST['Email_name'];
+  $Ename = strtolower($_POST['Email_name']);
   $mailmanattern = "/^[\w.+\-]+@mailman\.com$/";
   $patterngmail = "/^[\w.+\-]+@gmail\.com$/";
   $namepattern = "/^[A-Za-z]+$/";
-  $Altname = $_POST['Atlemail_name'];
+  $Altname = strtolower($_POST['Atlemail_name']);
   $Pass = $_POST['Passworda'];
   $Altpass = $_POST['ConfirmPassworda'];
   $Picture = $_FILES['files'];
@@ -76,7 +76,7 @@ if (isset($_POST['submit'])) {
   }
 
   if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%])[0-9A-Za-z!@#$%]{8,20}$/', ($Pass))) {
-    $errid['passErr'] = 'Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.';
+    $errid['passErr'] = 'Please Enter Strong Password';
   } else {
    
     $errid['passErr']='';

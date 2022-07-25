@@ -69,6 +69,11 @@ class Dbconnection
     $data = htmlspecialchars($data);
     return $data;
   }
+  function test_data($data) {
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+  }
 }
 
 $obj = new Dbconnection();

@@ -7,12 +7,13 @@
   <title>Registration</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+ 
 </head>
 
 <body>
-  <section class="pt-3">
-    <div class="mask d-flex align-items-center h-100 gradient-custom-3">
-      <div class="container h-100">
+  <section class="pt-5">
+    <div class="mask d-flex align-items-center  gradient-custom-3">
+      <div class="container ">
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-12 col-md-9 col-lg-7 col-xl-6">
             <div class="card" style="border-radius: 15px;">
@@ -24,50 +25,50 @@
 
                   <div class="position-absolute w-25 end-0 me-5 mt-4">
                     <div><img src="pictures/piclogo.png" class="rounded-3 pb-3" style="width:150px" alt="Avatar" /></div>
-                    <div><input type="file" id="Pic" name="avtar"></div>
-                    <span id="picerr" class="text-danger"> </span>
+                    <div><label for="Pic" class="btn btn-success mt-2 px-4">Select Picture</label><input type="file" style="visibility:hidden;"  id="Pic" name="avtar"></div>
+                    <span id="picerr" class="text-danger small"> </span>
                   </div>
-                  <div class="form-outline mb-3">
+                  <div class="form-outline mb-2">
                     <label class="form-label" for="FistName">First Name</label>
                     <input type="text" id="FirstName" class="w-50 form-control form-control-lg"  />
-                    <span id="nameErr" class="text-danger"></span>
+                    <span id="nameErr" class="text-danger small"></span>
                   </div>
-                  <div class="form-outline mb-3">
+                  <div class="form-outline mb-2">
                     <label class="form-label" for="LastName">Last Name</label>
                     <input type="text" id="LastName" class="w-50 form-control form-control-lg"  />
-                    <span id="lnameErr" class="text-danger"></span>
+                    <span id="lnameErr" class="text-danger small"></span>
                   </div>
-                  <div class="form-outline mb-3">
+                  <div class="form-outline mb-2">
                     <label class="form-label" for="UserName">User Name</label>
                     <input type="text" id="UserName" class="w-50 form-control form-control-lg"  />
-                    <span id="unemeErr" class="text-danger"></span>
+                    <span id="unemeErr" class="text-danger small"></span>
                   </div>
 
-                  <div class="form-outline mb-3">
+                  <div class="form-outline mb-2">
                     <label class="form-label" for="email">Enter Your Email</label>
                     <div class="d-flex"><input type="text" id="Email" class="w-50 form-control form-control-lg"  />
                       <p class="pt-2 ps-2">@mailman.com</p>
                     </div>
-                    <span id="emailErr" class="text-danger"></span>
+                    <span id="emailErr" class="text-danger small"></span>
                   </div>
-                  <div class="form-outline mb-3">
+                  <div class="form-outline mb-2">
                     <label class="form-label" for="AltEmail">Enter Your Recovery Email</label>
                     <input type="email" id="AltEmail" class="form-control form-control-lg"  />
-                    <span id="cemailErr" class="text-danger"></span>
+                    <span id="cemailErr" class="text-danger small "></span>
                   </div>
-                  <div class="form-outline mb-3">
+                  <div class="form-outline mb-2">
                     <label class="form-label" for="password">Enter New Password Here</label>
                     <div class="d-flex">
                       <input type="password" id="Password" class="form-control form-control-lg pe-5"  />
-                      <i class="fas fa-question-circle ps-2"><img src="./pictures/q.png" alt="icon" style="width:20px;height:20px"></i>
+                      <i class="fas fa-question-circle ps-2"><img src="./pictures/q.png" alt="icon" style="width:20px;height:20px" title="Password should be 8 character with numeric and special character"></i>
                     </div>
-                    <span id="passErr" class="text-danger"></span>
+                    <span id="passErr" class="text-danger small"></span>
                   </div>
 
-                  <div class="form-outline mb-3">
+                  <div class="form-outline mb-2">
                     <label class="form-label" for="ConfirmPassword">Confirm password</label>
                     <input type="password" id="ConfirmPassword" class="form-control form-control-lg"  />
-                    <span id="cpassErr" class="text-danger"></span>
+                    <span id="cpassErr" class="text-danger small"></span>
                   </div>
 
 
@@ -79,9 +80,9 @@
                   </div>
 
                   <div class="d-flex pb-5 pe-5">
-                    <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body me-5" id="submitt" name="submit">Register</button>
+                    <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4  me-5" id="submitt" name="submit">Register</button>
 
-                    <button type="button" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" id="signinst">Sign-in Instead</button>
+                    <button type="button" class="btn btn-success btn-block btn-lg gradient-custom-4 " id="signinst">Sign-in Instead</button>
                   </div>
 
                 </form>
@@ -132,13 +133,9 @@
         success: function(data) {
 
           if (!data.response) {
-            // console.log(data.arrayvalue)
             $.each(data.arrayvalue, function(index, value) {
-              // console.log(index + " --- "     + value);
                 $("#" + index).html(value);
-            });
-            // foreach( in ) {
-            // }        
+            });       
           } else {
             location.href = "registrationssuccess.php"
           }

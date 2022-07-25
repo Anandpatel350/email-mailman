@@ -21,37 +21,37 @@ if (!isset($_SESSION['Email'])) {
 </head>
 
 <body>
-<nav class="navbar navbar-light bg-success">
-        <div class="container-fluid m-3">
-            <a class="navbar-brand">
-                <h1 class="text-light ms-2">Mail Man</h1>
-            </a>
-            <div class="dropdown">
-                <div class="d-flex">
-                        <!-- username -->
-                        <button class="btn btn-outline-dark me-3" type="submit"><?php echo $_SESSION['Email']; ?></button>
-                        <?php
-                        $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';
-                        ?>
-                    
-                        <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
-                            </ul>
+  <nav class="navbar navbar-light bg-success">
+    <div class="container-fluid m-3">
+      <a class="navbar-brand">
+        <h1 class="text-light ms-2">Mail Man</h1>
+      </a>
+      <div class="dropdown">
+        <div class="d-flex">
+          <!-- username -->
+          <button class="btn btn-outline-dark me-3" type="submit"><?php echo $_SESSION['Email']; ?></button>
+          <?php
+          $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';
+          ?>
 
-                        </div>
-                    
-                </div>
-            </div>
+          <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
+            <ul class="dropdown-menu mt-2" style="margin-left:80px;" aria-labelledby="dropdownMenu2">
+              <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
+            </ul>
+
+          </div>
 
         </div>
-    </nav>
+      </div>
+
+    </div>
+  </nav>
   <section class="vh-100">
     <div class="container h-custom">
 
       <div class="row d-flex justify-content-center align-items-center h-100 ms-5">
 
-        <div class="col-md-9 ">
+        <div class="col-md-10 ">
 
           <h2>Mailman.com</h2>
           <div>
@@ -75,11 +75,16 @@ if (!isset($_SESSION['Email'])) {
             </form>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <img src="images/<?php echo $profile_url; ?>" class="img-fluid" alt="Sample image" />
-          <div class="d-flex justify-content-around"> <input type="file" id="Pic" class="btn btn-success mt-2 me-3 w-75" value="picture" name="avtar" class="pt-3">
+          <div class="d-flex justify-content-around">
+            
+              <label for="Pic" class="btn btn-success mt-2">Select  Picture</label>
+              <input id="Pic" style="visibility:hidden;" id="Pic" type="file" value="picture" name="avtar">
+            
+
+            <!-- <input type="file" id="Pic" class="btn btn-success mt-2 me-3 w-50"  class="pt-3"> -->
             <button type="button" class="btn btn-success mt-2" id="deletepic"> Remove Picture</button>
-          </div>
           <span id="picerr" class="text-danger"></span>
         </div>
       </div>
@@ -125,14 +130,16 @@ if (!isset($_SESSION['Email'])) {
 
     });
 
-    $("#deletepic").click(function(event) {  
+    $("#deletepic").click(function(event) {
 
       $.ajax({
         url: "phpinclude/profileupdatebe.php",
         type: 'POST',
-        data : {id :1},
+        data: {
+          id: 1
+        },
         dataType: 'JSON',
-        success: function(data) { 
+        success: function(data) {
           if (data['response']) {
             alert(data['message']);
             location.href = "profileUpdate.php"

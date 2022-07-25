@@ -2,79 +2,55 @@
 include 'phpinclude/connection.php';
 
 $email = $_SESSION['Email'];
-$limit_ofset = 10;
+$limit_ofset = 4;
 $page = "";
 
 // ----------------compose----------------------
 if (isset($_POST['submsg'])) {
 
-  $to_mail = $_POST['to_name'];
-  if ($to_mail == $email) {
-    echo json_encode([
-      'response' => false,
-      'error_id' => 'toname'
-    ]);
-    die;
-  }
+  $msgarray=array();
+
+  $to_mail = strtolower($_POST['to_name']);
 
   if (!filter_var($to_mail, FILTER_VALIDATE_EMAIL)) {
-    echo json_encode([
-      'response' => false,
-      'error_id' => 'toname'
-    ]);
-    die;
+    $msgarray[0]='toname';
   }
+  
+
   $sql = "SELECT id from users where Email = '$to_mail'";
   $che = $obj->checkquery($sql);
   if ($che == false) {
-    echo json_encode([
-      'response' => false,
-      'error_id' => 'toname'
-    ]);
-    die;
+    $msgarray[0]='toname';
   }
-  $cc_mail = $_POST['cc_name'];
+   
+  
+  $cc_mail = strtolower($_POST['cc_name']);
   if ($cc_mail != null) {
     if (!filter_var($cc_mail, FILTER_VALIDATE_EMAIL)) {
-      echo json_encode([
-        'response' => false,
-        'error_id' => 'ccname'
-      ]);
-      die;
+      $msgarray[1]='ccname';
     }
+   
     $sql = "SELECT id from users where Email = '$cc_mail'";
     $che = $obj->checkquery($sql);
     if ($che == false) {
-      echo json_encode([
-        'response' => false,
-        'error_id' => 'ccname'
-      ]);
-      die;
+      $msgarray[1]='ccname';
     }
   }
 
-  $bcc_mail = $_POST['bcc_name'];
+  $bcc_mail = strtolower($_POST['bcc_name']);
   if ($bcc_mail != null) {
     if (!filter_var($bcc_mail, FILTER_VALIDATE_EMAIL)) {
-      echo json_encode([
-        'response' => false,
-        'error_id' => 'bccname'
-      ]);
-      die;
+      $msgarray[2]='bccname';
     }
     $sql = "SELECT id from users where Email = '$bcc_mail'";
     $che = $obj->checkquery($sql);
     if ($che == false) {
-      echo json_encode([
-        'response' => false,
-        'message' => "email address not vlaid",
-        'error_id' => 'bccname'
-      ]);
-      die;
+      $msgarray[2]='bccname';
     }
   }
-  $sub_mail = $_POST['sub_name'];
-  $text_mail = $_POST['text_name'];
+  $sub_mail = $obj->test_input($_POST['sub_name']);
+
+  $text_mail = $obj->test_data($_POST['text_name']);
 
   $attechment = $_FILES['files'];
   $path = $_SERVER['DOCUMENT_ROOT'] . "/mail_project/images";
@@ -85,20 +61,28 @@ if (isset($_POST['submsg'])) {
 
   $dat = date("d-m-y h:i:s");
 
-  $wa = "INSERT INTO userdata(to_email,from_email, cc_email,bcc_email ,`subject`, `message`, attachment,`time`,from_trash,to_trash,cc_trash,bcc_trash,draft) VALUES ('$to_mail','$email','$cc_mail','$bcc_mail', '$sub_mail', '$text_mail ', '$name','$dat','0','0','0','0','0')";
-
-  if ($obj->insert($wa)) {
+  if((count($msgarray) == 0)) {
+    $wa = "INSERT INTO userdata(to_email,from_email, cc_email,bcc_email ,`subject`, `message`, attachment,`time`,from_trash,to_trash,cc_trash,bcc_trash,draft) VALUES ('$to_mail','$email','$cc_mail','$bcc_mail', '$sub_mail', '$text_mail ', '$name','$dat','0','0','0','0','0')";
+    $obj->insert($wa);
     echo json_encode(['response' => true, 'message' => 'Msg sent successfull']);
+  }
+  else{
+    echo json_encode(
+      [
+        "error_value" => $msgarray,
+        "response" => false
+      ]
+    );
   }
 }
 // -----------
 if (isset($_POST['draftdata'])) {
 
-  $to_mail = $_POST['to_name'];
-  $cc_mail = $_POST['cc_name'];
-  $bcc_mail = $_POST['bcc_name'];
-  $sub_mail = $_POST['sub_name'];
-  $text_mail = $_POST['text_name'];
+  $to_mail = $obj->test_input($_POST['to_name']);
+  $cc_mail = $obj->test_input($_POST['cc_name']);
+  $bcc_mail = $obj->test_input($_POST['bcc_name']);
+  $sub_mail = $obj->test_input($_POST['sub_name']);
+  $text_mail = $obj->test_data($_POST['text_name']);
   $attechment = $_FILES['files'];
   $path = $_SERVER['DOCUMENT_ROOT'] . "/mail_project/images";
   $temp_name = $attechment['tmp_name'];
@@ -115,22 +99,42 @@ if (isset($_POST['draftdata'])) {
   }
 }
 }
+// ------------open mail in inbox ------------
+
+if (isset($_POST['selectrow_inbox'])) {
+  $vaue = $_POST['selectrow_inbox_data'];
+
+  $sql = "SELECT * FROM userdata  WHERE id='$vaue' ORDER BY id desc";
+
+  $result = $obj->conn->query($sql);
+  $output = $result->fetch_all(MYSQLI_ASSOC);
+  $result_check = $obj->fetchdata($sql);
+  if($email == $result_check['to_email']) {
+    $readqry = "UPDATE userdata SET read_unread_to = '0' WHERE id='$vaue'";
+   
+  } else if($email == $result_check['cc_email']) {
+    $readqry = "UPDATE userdata SET read_unread_cc = '0' WHERE id='$vaue'";
+  } else if($email == $result_check['bcc_email']) {
+    $readqry = "UPDATE userdata SET read_unread_bcc = '0' WHERE id='$vaue'";
+  }
+  $obj->insert($readqry);
+  echo json_encode($output);
+
+ 
+
+}
 
 
 // ------------open mail------------
 
 if (isset($_POST['selectrow'])) {
   $vaue = $_POST['selectrow'];
-
   $sql = "SELECT * FROM userdata  WHERE id='$vaue' ORDER BY id desc";
-
   $result = $obj->conn->query($sql);
-  $readqry = "UPDATE userdata SET read_unread = '0' WHERE id='$vaue'";
-  $obj->insert($readqry);
   $output = $result->fetch_all(MYSQLI_ASSOC);
   echo json_encode($output);
 }
-// -----------sentbox-----------------------------------------------------------------------------------------------------working------------
+// -----------sentbox---------------------------------------------------------------------------------------------------------------
 if (isset($_POST['sendItem'])) {
 
   if (isset($_POST['page_no'])) {
@@ -146,7 +150,7 @@ if (isset($_POST['sendItem'])) {
   $output = $result->fetch_all(MYSQLI_ASSOC);
 
   $datavalue = '';
-  $datavalue .= " <table class='table'>  <div id='table_head'> <tr><th></th> <th>To</th><th>subject</th> <th>YY/MM-DD</th> </tr></div><tbody >";
+  $datavalue .=" <table class='table'>  <div id='table_head'> <tr><th style='width:5%'></th> <th style='width:42%'>To</th><th style='width:38%'>subject</th><th style='width:15%'>YY/MM-DD</th> </tr></div><tbody >";
   foreach ($output as $k => $v) {
     $datavalue .= "<tr data-id=" . $v['id'] . "><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" . $v['id'] . "></td><td class='inboxclass'>" . $v['to_email'] . "</td><td class='inboxclass'>" .  $a = (!empty($v['subject']) ? $v['subject'] : '(No Subject)'). "</td><td class='inboxclass'>" . $v['time'] . "</td></tr>";
   }
@@ -157,7 +161,7 @@ if (isset($_POST['sendItem'])) {
   $total_numrow = $total_record->num_rows;
   $total_pages = ceil($total_numrow / $limit_ofset);
 
-  $datavalue .= "<nav aria-label='Page navigation example' id='paggi'> <ul class='pagination justify-content-center'>";
+  $datavalue .= "<nav aria-label='Page navigation example' id='paggi'> <ul class='pagination'>";
   for ($i = 1; $i <= $total_pages; $i++) {
 
     $datavalue .= "<a class='page-link' id='{$i}'>{$i}</a>";
@@ -186,7 +190,8 @@ if (isset($_POST['draftitem'])) {
   $output = $result->fetch_all(MYSQLI_ASSOC);
 
   $datavalue = '';
-  $datavalue .= " <table class='table'>  <div id='table_head'> <tr><th></th> <th>To</th><th>subject</th> <th>YY/MM-DD</th> </tr></div><tbody >";
+  $datavalue .=" <table class='table'>  <div id='table_head'> <tr><th style='width:5%'></th> <th style='width:42%'>To</th><th style='width:38%'>subject</th><th style='width:15%'>YY/MM-DD</th> </tr></div><tbody >";
+  
   foreach ($output as $k => $v) {
     $datavalue .= "<tr data-id=" . $v['id'] . "><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" . $v['id'] . "></td><td class='inboxclass text-danger'>" .  $b = (!empty($v['to_email']) ? $v['to_email']: 'Draft') . "</td><td class='inboxclass'>" . $a = (!empty($v['subject']) ? $v['subject'] : '(No Subject)'). "</td><td class='inboxclass'>" . $v['time'] . "</td></tr>";
   }
@@ -197,7 +202,7 @@ if (isset($_POST['draftitem'])) {
   $total_numrow = $total_record->num_rows;
   $total_pages = ceil($total_numrow / $limit_ofset);
 
-  $datavalue .= "<nav aria-label='Page navigation example' id='paggi'> <ul class='pagination justify-content-center'>";
+  $datavalue .= "<nav aria-label='Page navigation example' id='paggi'> <ul class='pagination'>";
   for ($i = 1; $i <= $total_pages; $i++) {
 
     $datavalue .= "<a class='page-link' id='{$i}'>{$i}</a>";
@@ -227,7 +232,7 @@ if (isset($_POST['trashitem'])) {
   $result = $obj->conn->query($sql);
   $output = $result->fetch_all(MYSQLI_ASSOC);
   $datavalue = '';
-  $datavalue .= " <table class='table'>  <div id='table_head'> <tr><th></th> <th>........@mailman.com</th><th>subject</th> <th>YY/MM-DD</th> </tr></div><tbody >";
+  $datavalue .=" <table class='table'>  <div id='table_head'> <tr><th style='width:5%'></th> <th style='width:42%'>........@mailman.com</th><th style='width:38%'>subject</th><th style='width:15%'>YY/MM-DD</th> </tr></div><tbody >";
   foreach ($output as $k => $v) {
     $datavalue .= "<tr data-id=" . $v['id'] . "><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" . $v['id'] . "></td><td class='inboxclass'>" . $v['from_email'] . "</td><td class='inboxclass'>" .  $a = (!empty($v['subject']) ? $v['subject'] : '(No Subject)'). "</td><td class='inboxclass'>" . $v['time'] . "</td></tr>";
   }
@@ -238,7 +243,7 @@ if (isset($_POST['trashitem'])) {
   $total_numrow = $total_record->num_rows;
   $total_pages = ceil($total_numrow / $limit_ofset);
 
-  $datavalue .= "<nav aria-label='Page navigation example' id='paggi'> <ul class='pagination justify-content-center'>";
+  $datavalue .= "<nav aria-label='Page navigation example' id='paggi'> <ul class='pagination'>";
   for ($i = 1; $i <= $total_pages; $i++) {
 
     $datavalue .= "<a class='page-link' id='{$i}'>{$i}</a>";
@@ -267,9 +272,16 @@ if (isset($_POST['inboxitem'])) {
   $result = $obj->conn->query($sql);
   $output = $result->fetch_all(MYSQLI_ASSOC);
   $datavalue = '';
-  $datavalue .= " <table class='table'>  <div id='table_head'> <tr><th></th> <th>From</th><th>subject</th><th>YY/MM-DD</th> </tr></div><tbody >";
+  
+  $datavalue .= " <table class='table'>  <div id='table_head'> <tr><th style='width:5%'></th> <th style='width:42%'>From</th><th style='width:38%'>subject</th><th style='width:15%'>YY/MM-DD</th> </tr></div><tbody >";
   foreach ($output as $k => $v) {
-    $datavalue .= "<tr style=" . (!empty($v['read_unread']) ? 'font-weight:500' : 'font-weight:350') ." data-id=" . $v['id'] ."><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" . $v['id'] . "></td><td class='inboxclass'>" . $v['from_email'] . "</td><td class='inboxclass'>" .  $a = (!empty($v['subject']) ? $v['subject'] : '(No Subject)'). "</td><td class='inboxclass'>" . $v['time'] . "</td></tr>";
+    if($email == $v['to_email']){
+    $datavalue .= "<tr style=" . (!empty($v['read_unread_to']) ? 'font-weight:500' : 'font-weight:350') ." data-id=" . $v['id'] ."><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" . $v['id'] . "></td><td class='inboxclass'>" . $v['from_email'] . "</td><td class='inboxclass'>" .  $a = (!empty($v['subject']) ? $v['subject'] : '(No Subject)'). "</td><td class='inboxclass'>" . $v['time'] . "</td></tr>";
+    }elseif($email ==$v['cc_email']){
+      $datavalue .= "<tr style=" . (!empty($v['read_unread_cc']) ? 'font-weight:500' : 'font-weight:350') ." data-id=" . $v['id'] ."><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" . $v['id'] . "></td><td class='inboxclass'>" . $v['from_email'] . "<span class='text-success small'>-(cc)</span>"."</td><td class='inboxclass'>" .  $a = (!empty($v['subject']) ? $v['subject'] : '(No Subject)'). "</td><td class='inboxclass'>" . $v['time'] . "</td></tr>";
+    }elseif($email == $v['bcc_email']){
+      $datavalue .= "<tr style=" . (!empty($v['read_unread_bcc']) ? 'font-weight:500' : 'font-weight:350') ." data-id=" . $v['id'] ."><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" . $v['id'] . "></td><td class='inboxclass'>" . $v['from_email'] . "<span class='text-success small'>-(bcc)</span>"."</td><td class='inboxclass'>" .  $a = (!empty($v['subject']) ? $v['subject'] : '(No Subject)'). "</td><td class='inboxclass'>" . $v['time'] . "</td></tr>";
+    }
   }
   $datavalue .= "</tbody> </table>";
 
@@ -278,7 +290,7 @@ if (isset($_POST['inboxitem'])) {
   $total_numrow = $total_record->num_rows;
   $total_pages = ceil($total_numrow / $limit_ofset);
 
-  $datavalue .= "<nav aria-label='Page navigation example' id='paggi'> <ul class='pagination justify-content-center'>";
+  $datavalue .= "<nav aria-label='Page navigation example' id='paggi'> <ul class='pagination'>";
   for ($i = 1; $i <= $total_pages; $i++) {
 
     $datavalue .= "<a class='page-link' id='{$i}'>{$i}</a>";
@@ -299,12 +311,12 @@ if (isset($_POST['inbox_value'])) {
   $IDD = $_POST['inbox_delete'];
   $qry = "select * from userdata where id='$IDD'";
   $result = $obj->fetchdata($qry);
-  if(strtolower($email) == strtolower($result['to_email'])) {
+  if($email == $result['to_email']) {
     $sql = "UPDATE userdata SET to_trash  = '1' WHERE id='$IDD'";
    
-  } else if(strtolower($email) == strtolower($result['cc_email'])) {
+  } else if($email == $result['cc_email']) {
     $sql = "UPDATE userdata SET cc_trash  = '1' WHERE id='$IDD'";
-  } else if(strtolower($email) == strtolower($result['bcc_email'])) {
+  } else if($email == $result['bcc_email']) {
     $sql = "UPDATE userdata SET bcc_trash  = '1' WHERE id='$IDD'";
   }
   if ($obj->insert($sql)) {
@@ -320,21 +332,21 @@ if (isset($_POST['inbox_value'])) {
     ]);
   }
 }
-// ----------------trash item delete-----------
+// ----------------trash item delete-------------
 if (isset($_POST['trash_value_delete'])) {
   $IDD = $_POST['trash_delete'];
   $qry = "select * from userdata where id='$IDD'";
   $result = $obj->fetchdata($qry);
   // print_r($result);die();
-  if(strtolower($email) == strtolower($result['from_email'])) {
+  if($email == $result['from_email']) {
     $sql = "UPDATE userdata SET from_delete  = '1' WHERE id='$IDD'";
    
-  }else if(strtolower($email) == strtolower($result['to_email'])) {
+  }else if($email == $result['to_email']) {
     $sql = "UPDATE userdata SET to_delete  = '1' WHERE id='$IDD'";
    
-  } else if(strtolower($email) == strtolower($result['cc_email'])) {
+  } else if($email == $result['cc_email']) {
     $sql = "UPDATE userdata SET cc_delete  = '1' WHERE id='$IDD'";
-  } else if(strtolower($email) == strtolower($result['bcc_email'])) {
+  } else if($email == $result['bcc_email']) {
     $sql = "UPDATE userdata SET bcc_delete  = '1' WHERE id='$IDD'";
   }
   if ($obj->insert($sql)) {
@@ -355,15 +367,15 @@ if (isset($_POST['trash_value_restore'])) {
   $IDD = $_POST['trash_restore'];
   $qry = "select * from userdata where id='$IDD'";
   $result = $obj->fetchdata($qry);
-  if(strtolower($email) == strtolower($result['from_email'])) {
+  if($email == $result['from_email']) {
     $sql = "UPDATE userdata SET from_trash  = '0' WHERE id='$IDD'";
    
-  }else if(strtolower($email) == strtolower($result['to_email'])) {
+  }else if($email == $result['to_email']) {
     $sql = "UPDATE userdata SET to_trash  = '0' WHERE id='$IDD'";
    
-  } else if(strtolower($email) == strtolower($result['cc_email'])) {
+  } else if($email == $result['cc_email']) {
     $sql = "UPDATE userdata SET cc_trash  = '0' WHERE id='$IDD'";
-  } else if(strtolower($email) == strtolower($result['bcc_email'])) {
+  } else if($email == $result['bcc_email']) {
     $sql = "UPDATE userdata SET bcc_trash  = '0' WHERE id='$IDD'";
   }
   if ($obj->insert($sql)) {
@@ -417,13 +429,35 @@ if (isset($_POST['draft_value'])) {
 }
 // ------------read unread functinality-----------
 if (isset($_POST['inbox_value_unread']) || isset($_POST['inbox_value_Read'])) {
-  $IDD = (!empty($_POST['inbox_delete_unread']) ? $_POST['inbox_delete_unread'] : $_POST['inbox_delete_Read']);
-if(isset($_POST['inbox_value_unread'])){
-  $sql = "UPDATE userdata SET read_unread = '1' WHERE id='$IDD'";
-} else
-{
-  $sql = "UPDATE userdata SET read_unread = '0' WHERE id='$IDD'"; 
-}
+  $IDD = (!empty($_POST['inbox_value_unread_data']) ? $_POST['inbox_value_unread_data'] : $_POST['inbox_value_Read_data']);
+
+  $qry = "select * from userdata where id='$IDD'";
+  $result = $obj->fetchdata($qry);
+  if($email == $result['to_email']) {
+    if(isset($_POST['inbox_value_unread'])){
+      $sql = "UPDATE userdata SET read_unread_to = '1' WHERE id='$IDD'";
+    } else
+    {
+      $sql = "UPDATE userdata SET read_unread_to = '0' WHERE id='$IDD'"; 
+    }
+   
+  } else if($email == $result['cc_email']) {
+    if(isset($_POST['inbox_value_unread'])){
+      $sql = "UPDATE userdata SET read_unread_cc = '1' WHERE id='$IDD'";
+    } else
+    {
+      $sql = "UPDATE userdata SET read_unread_cc = '0' WHERE id='$IDD'"; 
+    }
+  } else if($email == $result['bcc_email']) {
+    if(isset($_POST['inbox_value_unread'])){
+      $sql = "UPDATE userdata SET read_unread_bcc = '1' WHERE id='$IDD'";
+    } else
+    {
+      $sql = "UPDATE userdata SET read_unread_bcc = '0' WHERE id='$IDD'"; 
+    }
+  }
+
+
  if ($obj->insert($sql)) {
     echo json_encode([
       'response' => true,

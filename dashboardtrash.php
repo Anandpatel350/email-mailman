@@ -15,7 +15,20 @@ if (!isset($_SESSION['Email'])) {
     <link href="./scsscode/mainpage.css" rel="stylesheet">
     <title>inbox</title>
     <!-- newcss -->
-
+    <style>
+        #popup {
+            display: none;
+            position: absolute;
+            top: 160px;
+            right: 25px;
+            z-index: 9999;
+           text-align: center;
+            width: 500px;
+            height: 100px;
+            padding-top: 40px;
+            color: green;
+        }
+    </style>
 
     <!-- 00000000000000 -->
 </head>
@@ -39,7 +52,7 @@ if (!isset($_SESSION['Email'])) {
                     ?>
 
                     <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <ul class="dropdown-menu mt-2" style="margin-left:80px;" aria-labelledby="dropdownMenu2">
                             <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
                             <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
                         </ul>
@@ -133,6 +146,7 @@ if (!isset($_SESSION['Email'])) {
             </div>
         </div>
     </div>
+    <div class="alert alert-secondary " id="popup" role="alert"></div>
     <!-- hidden inpute -->
     <input type="hidden" id="page_number" value="1">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -166,22 +180,19 @@ if (!isset($_SESSION['Email'])) {
             $(document).on("click", "#paggi ul .page-link", function(e) {
                 e.preventDefault();
                 var page_id = $(this).attr('id');
-                console.log(page_id)
+                $("#page_number").val(page_id);
                 loadTable(page_id);
 
             });
 
-            // -----------------------open mail-------------
-            $(document).on("click", "tr", function(e) {
+            // -----------------------open mail---------------
+            $(document).on("click", ".inboxclass", function(e) {
 
                 e.preventDefault(e);
-
                 $("#table-data").html("");
-                $("#heading").html("mail box");
-                $("tr").hide();
-                $("#paggi").hide();
+               
 
-                var trval = $(this).attr('data-id');
+                var trval = $(this).parent().attr('data-id');
                 jQuery.ajax({
 
                     url: "fetch.php",
@@ -195,36 +206,61 @@ if (!isset($_SESSION['Email'])) {
                     success: function(data) {
                         var tab = '';
                         $.each(data, function(index, value) {
-                            tab += '<div class="container">';
-                            tab += '<div class="panel-body">';
-                            tab += '<div class="panel-body">';
-                            tab += '  <div class="row">'
-                            tab += '<div class="col-sm-6">'
-                            tab += ' <h6>from: ' + value.from_email + '</h6><br>'
-                            tab += '   <h6>to: ' + value.to_email + '</h6><br>'
-                            tab += ' </div>'
-                            tab += ' <div class="col-sm-6">'
+                            $("#heading").html("<div class='d-flex'><button id='backbutton' class='btn btn-info px-4' type='submit'>&laquo;</button> <h5 class='ps-5 pt-2'>Subject : " + value.subject + "</h5></div>");
+                            tab += "<div class='container p-5 border border-success'>"
+                            tab += "<div class='panel-body'>"
+                            tab += "<div class='row'>"
+                            tab += "<div class='col-sm-9'>"
+                            tab += "<div class='dropdown'>"
+                            tab += "<div class='dropdown'>"
+                            tab += "<a class='dropdown-toggle' href='#' role='button' id='dropdownMenuLink' data-bs-toggle='dropdown' aria-expanded='false'>"
+                            tab += "Dropdown link"
+                            tab += "</a>"
 
+                            tab += "<ul class='dropdown-menu' aria-labelledby='dropdownMenuLink'>"
+                            tab += "<li><a class='dropdown-item link-primary' href='#'>From:- " + value.from_email + "</a></li>"
+                            tab += "<li><a class='dropdown-item link-primary' href='#'>Cc:- " + value.cc_email + "</a></li>"
+                            tab += "</ul>"
+                            tab += "</div>"
+                            tab += "</div>"
+                            tab += "</div>"
+                            tab += "<div class='col-sm-3 text-end'>"
+                            tab += "<h6>Date:2022-07-22 18:40:31</h6>"
+                            tab += "</div>"
+                            tab += "</div>"
+                            tab += "<div class='row mt-5'>"
 
-                            tab += ' <h6>Date:' + value.time + '</h6>'
-                            tab += '</div>'
-                            tab += '</div>'
-                            tab += ' <div class="row">'
-                            tab += '  <div class="col-sm-12" > <h6>Subject:' + value.subject + ' </h6></div><br><br>'
-                            tab += '</div>'
-                            tab += ' <div class="row" >'
+                            tab += " <div class='col-sm-12'><div class='border rounded-3' style='word-wrap: break-word; padding:10px;height:350px'>" + value.message + "</div></div>"
 
-                            tab += '<div class="col-sm-12" > <p> message:-  ' + value.message + '</p></div>  '
-                            tab += '</div>'
-                            tab += '</div>'
-                            tab += '</div>'
-                            tab += '</div>'
+                            tab += "</div>"
+                            tab += "<div class='row mt-2'>"
+                            tab += "<div class='col-sm-12''>"
+                            tab +="<a href='' class='link-primary'>Attachments</a>"
+                            tab += "</div>"
+                            tab += "</div>"
+                            tab += "<div class='row mt-2'>"
+                            tab += "<div class='d-flex '>"
+                            tab += "<div><button class='btn btn-outline-dark mx-2'  id='Reply' type='submit'>Reply</button></div>"
+                            tab += "<div><button class='btn btn-outline-dark mx-4'  id='Reply All' type='submit'>Reaply All</button></div>"
+                            tab += "</div>"
+                            tab += "</div>"
+
+                            tab += "</div>"
+                            tab += "</div>"
+                            
 
                         });
 
                         $("#table-data").append(tab);
                     }
                 });
+
+            });
+             // back button
+             $(document).on("click", "#backbutton ", function(e) {
+                $('#heading').html('<h5>Inbox Item</h5>')
+                var x=$("#page_number").val();
+                            loadTable(x);
 
             });
             // ---------------------------------------------
@@ -272,7 +308,7 @@ if (!isset($_SESSION['Email'])) {
 
 
             // ---------------------draft auto saved------
-            $("#closed,#sideclose").click(function(e) {
+            $("#closed").click(function(e) {
                 e.preventDefault(e);
                 //    alert("hello");
                 var tonameval = $("#toname").val();
@@ -299,7 +335,12 @@ if (!isset($_SESSION['Email'])) {
                     contentType: false,
                     success: function(data) {
                         if (data['response']) {
-                            alert(data['message'])
+                            // alert(data['message'])
+                            $('#popup').html('<i>'+data['message']+'<i>');
+                            $('#popup').show(function(){$('#popup').delay(700).fadeOut(700);});
+                            $("#sideclose").click();
+                            $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
+                            $("#toname,#ccname,#bccname").css('border', '');
 
                         } else {
                             $("#" + data['error_id']).css('border', '1px solid red')
@@ -316,6 +357,7 @@ if (!isset($_SESSION['Email'])) {
             $("#submit1").click(function(e) {
                 e.preventDefault(e);
                 //    alert("hello");
+                $("#toname,#ccname,#bccname").css('border', '')
                 var tonameval = $("#toname").val();
                 var ccnameval = $("#ccname").val();
                 var bccnameval = $("#bccname").val();
@@ -339,14 +381,19 @@ if (!isset($_SESSION['Email'])) {
                     processData: false,
                     contentType: false,
                     success: function(data) {
-                        if (data['response']) {
-                            alert(data['message'])
-                            var x = $("#page_number").val();
-                            loadTable(x);
-
+                        if (!data['response']) {
+                            // alert(data['message'])
+                            
+                            $.each(data.error_value, function(index, value) {
+                                $("#" + value).css('border', '1px solid red')
+                            });
                         } else {
-                            $("#" + data['error_id']).css('border', '1px solid red')
-
+                            $('#popup').html('<i>'+data['message']+'<i>');
+                            $('#popup').show(function(){$('#popup').delay(700).fadeOut(700);});
+                            $("#sideclose").click();
+                            $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
+                            $("#toname,#ccname,#bccname").css('border', '');
+                            
                         }
 
                     }
