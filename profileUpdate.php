@@ -13,7 +13,6 @@ if (!isset($_SESSION['Email'])) {
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=H, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <meta name="viewport" content="width=H, initial-scale=1.0">
   <link href="scsscode/index.css" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
@@ -35,7 +34,9 @@ if (!isset($_SESSION['Email'])) {
           ?>
 
           <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
-            <ul class="dropdown-menu mt-2" style="margin-left:80px;" aria-labelledby="dropdownMenu2">
+            <ul class="dropdown-menu mt-2" style="margin-left:150px;" aria-labelledby="dropdownMenu2">
+            <li><button class="dropdown-item text-center" type="button"><a href="dashboard.php">Home</a></button></li>
+            <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
               <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
             </ul>
 
@@ -122,7 +123,7 @@ if (!isset($_SESSION['Email'])) {
             $("#" + data['error_id']).html(data['message'])
           } else {
             // location.href = "dashboard.php"
-            alert(data['message']);
+            // alert(data['message']);
             location.href = "profileUpdate.php"
           }
         }
@@ -141,7 +142,7 @@ if (!isset($_SESSION['Email'])) {
         dataType: 'JSON',
         success: function(data) {
           if (data['response']) {
-            alert(data['message']);
+            // alert(data['message']);
             location.href = "profileUpdate.php"
           }
         }

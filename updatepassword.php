@@ -17,41 +17,71 @@ if (!isset($_SESSION['Email'])) {
 </head>
 
 <body>
-  <section class="vh-100 bg-image">
-    <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+  <section>
+    <nav class="navbar navbar-light bg-success">
+      <div class="container-fluid m-3">
+        <a class="navbar-brand">
+          <h1 class="text-light ms-2">Mail Man</h1>
+        </a>
+        <div class="dropdown">
+          <div class="d-flex">
+            <!-- username -->
+            <button class="btn btn-outline-dark me-3" type="submit"><?php echo $_SESSION['Email']; ?></button>
+            <?php
+            $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';
+            ?>
+
+<div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
+            <ul class="dropdown-menu mt-2" style="margin-left:150px;" aria-labelledby="dropdownMenu2">
+            <li><button class="dropdown-item text-center" type="button"><a href="dashboard.php">Home</a></button></li>
+            <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
+              <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
+            </ul>
+
+          </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      </div>
+    </nav>
+    <div class="mask d-flex align-items-center h-100 gradient-custom-3" style="padding-top:150px">
       <div class="container h-100">
+
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-12 col-md-9 col-lg-7 col-xl-6">
             <div class="card" style="border-radius: 15px;">
               <div class="card-body  py-5 px-5">
                 <h2 class="text-uppercase text-center pt-2 mb-4">Set New Password</h2>
-              
-                  <!-- form -->
-                  <form action="javascript:void(0)" id="formfp">
-                    <div class="form-outline mb-3">
-                      <label class="form-label" for="">Please Enter Current Password</label>
-                      <input type="password" id="oldpassword" class="form-control form-control-lg" />
-                      <span id="oldpassErr" class="text-danger"> </span>
+
+                <!-- form -->
+                <form action="javascript:void(0)" id="formfp">
+                  <div class="form-outline mb-3">
+                    <label class="form-label" for="">Please Enter Current Password</label>
+                    <input type="password" id="oldpassword" class="form-control form-control-lg" />
+                    <span id="oldpassErr" class="text-danger"> </span>
+                  </div>
+                  <div class="form-outline mb-3">
+                    <label class="form-label" for="">New Password</label>
+                    <input type="password" id="password" class="form-control form-control-lg" />
+                    <span id="passErr" class="text-danger"> </span>
+                  </div>
+                  <div class="form-outline mb-3">
+                    <label class="form-label" for="">Confirm Password</label>
+                    <input type="password" id="passwordagain" class="form-control form-control-lg" />
+                    <span id="cpassErr" class="text-danger"> </span>
+                  </div>
+                  <div class="d-flex justify-content-between pt-4">
+                    <div>
+                      <button type="submit" class="btn btn-success" id="submit">Success</button>
                     </div>
-                      <div class="form-outline mb-3">
-                        <label class="form-label" for="">New Password</label>
-                        <input type="password" id="password" class="form-control form-control-lg" />
-                        <span id="passErr" class="text-danger"> </span>
-                      </div>
-                      <div class="form-outline mb-3">
-                        <label class="form-label" for="">Confirm Password</label>
-                        <input type="password" id="passwordagain" class="form-control form-control-lg" />
-                        <span id="cpassErr" class="text-danger"> </span>
-                      </div>
-                      <div class="d-flex justify-content-between pt-4">
-                        <div>
-                          <button type="submit" class="btn btn-success" id="submit">Success</button>
-                        </div>
-                        <div class="float-right">
-                          <a class="text-decoration-none text-success" href="index.html">Return To Login</a>
-                        </div>
-                      </div>
-                  </form>
+                    <div class="float-right">
+                      <a class="text-decoration-none text-success" href="index.html">Return To Login</a>
+                    </div>
+                  </div>
+                </form>
 
               </div>
             </div>
@@ -82,11 +112,10 @@ if (!isset($_SESSION['Email'])) {
       $.post("phpinclude/updatepasswordbe.php", data,
         function(data, textStatus, jqXHR) {
 
-          if(data['response']){
+          if (data['response']) {
             alert(data['message'])
             location.href = "index.php"
-          }
-          else{
+          } else {
             $("#" + data['error_id']).html(data['message'])
           }
         },

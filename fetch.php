@@ -2,7 +2,7 @@
 include 'phpinclude/connection.php';
 
 $email = $_SESSION['Email'];
-$limit_ofset = 4;
+$limit_ofset = 10;
 $page = "";
 
 // ----------------compose----------------------

@@ -52,7 +52,7 @@ if (!isset($_SESSION['Email'])) {
                     ?>
 
                     <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
-                        <ul class="dropdown-menu mt-2" style="margin-left:80px;" aria-labelledby="dropdownMenu2">
+                        <ul class="dropdown-menu mt-2" style="margin-left:150px;" aria-labelledby="dropdownMenu2">
                             <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
                             <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
                         </ul>
@@ -302,7 +302,7 @@ if (!isset($_SESSION['Email'])) {
                     contentType: false,
                     success: function(data) {
                         if (data['response']) {
-                            $('#popup').html('<i>'+data['message']+'<i>');
+                            $('#popup').html('<i><h4>'+data['message']+'</h4><i>');
                             $('#popup').show(function(){$('#popup').delay(700).fadeOut(700);});
                             $("#sideclose").click();
                             $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
@@ -357,7 +357,7 @@ if (!isset($_SESSION['Email'])) {
                             });
                             
                         } else {
-                            $('#popup').html('<i>'+data['message']+'<i>');
+                            $('#popup').html('<i><h4>'+data['message']+'</h4><i>');
                             $('#popup').show(function(){$('#popup').delay(700).fadeOut(700);});
                             $("#sideclose").click();
                             $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
