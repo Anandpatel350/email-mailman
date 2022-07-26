@@ -34,7 +34,7 @@ class ResetLink extends Dbconnection
         } else {
             echo json_encode([
                 'response' => false,
-                'message' => "invalid email",
+                'message' => "Invalid Email Address",
                 'error' => "error"
             ]);
         }

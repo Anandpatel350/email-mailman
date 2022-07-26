@@ -34,7 +34,7 @@
                         <button type="submit" class="btn btn-success" id="submit">Success</button>
                       </div>
                       <div class="float-right">
-                        <a class="text-decoration-none text-success" href="index.html">Return To Login</a>
+                        <a class="text-decoration-none text-success" href="index.php">Return To Login</a>
                       </div>
                   </div>
                 </form>

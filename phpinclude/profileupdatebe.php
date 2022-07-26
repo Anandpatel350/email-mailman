@@ -1,79 +1,100 @@
 <?php
 include "../profileupdatedata.php";
-// var_dump($_SESSION['Picture']);die;
-$ssn=$_SESSION['Email'];
+$updatearray = array();
+$Ename=$_SESSION['Email'];
 if (isset($_POST['submit'])) {
+  $namepattern = "/^[A-Za-z]+$/";
+  $patternyahoo = "/^[a-zA-Z]{3}+[a-zA-Z0-9_\-\.]+@yahoo\.com$/";
+  $patterngmail = "/^[a-zA-Z]{3}+[a-zA-Z0-9_\-\.]+@gmail\.com$/";
+  // $patternyahoo = "/^[a-zA-Z]{3}+[a-zA-Z0-9_\-\.]+@yahoo\.com$/";
   $ob = new Dbconnection();
+
   $Fname = $_POST['First_name'];
+  
 
   if (empty($Fname)) {
-    echo json_encode([
-      'response' => false,
-      'message' => "Name not vlaid",
-      'error_id' => 'namerr'
-    ]);
-    die;
+    $updatearray['namerr'] = 'Please enter Name';
   }
+  elseif(!preg_match($namepattern, $Fname)){
+
+    $updatearray['namerr'] = 'Please enter valid Name';
+
+  }
+  else{
+    $updatearray['namerr'] = '';
+  }
+
   $Lname = $_POST['Last_name'];
   if (empty($Lname)) {
-    echo json_encode([
-      'response' => false,
-      'message' => "Last Name not vlaid",
-      'error_id' => 'lnamerr'
-    ]);
-    die;
+    $updatearray['lnamerr'] = 'Please enter last Name';
   }
-  $Ename = $_POST['Email_name'];
+  elseif(!preg_match($namepattern, $Lname)){
+
+    $updatearray['lnamerr'] = 'Please enter valid last Nameiii';
+
+  }
+  else{
+    $updatearray['lnamerr'] = '';
+  }
   $Altname = $_POST['Atlemail_name'];
-  if (!filter_var($Altname, FILTER_VALIDATE_EMAIL)) {
-    echo json_encode([
-      'response' => false,
-      'message' => "email address not vlaid",
-      'error_id' => 'cemailErr'
-    ]);
-    die;
+  if (!preg_match($patterngmail, $Altname) && !preg_match($patternyahoo, $Altname)) {
+
+    $updatearray['cemailErr'] = 'email address not vlaid';
+  } else {
+
+    $updatearray['cemailErr'] = '';
   }
-  // $Picture = $_FILES['files'];
   $Picture = $_FILES['files'];
-  $allowed =  array('jpeg', 'jpg', 'png', 'gif', 'bmp', 'JPEG', 'JPG', 'PNG', 'GIF', 'BMP','');
-  $ext = pathinfo($Picture['name'], PATHINFO_EXTENSION);
-  if (!in_array($ext, $allowed)) {
-    echo json_encode([
-      'response' => false,
-      'message' => "Please updload valid image",
-      'error_id' => 'picerr'
-    ]);
-    die;
-  }
-  // $path = $_SERVER['DOCUMENT_ROOT'] . "/mail_project/images";
-  $path = "../images";
+  $path = "../images/";
   $temp_name = $Picture['tmp_name'];
   $name = $Picture['name'];
   $path = $path . "/" . $name;
-  if (move_uploaded_file($temp_name, $path)) {
-    // echo 'true';
-  } else {
-    // echo 'false';
+  if ($Picture != null) {
+    $allowed =  array('jpeg', 'jpg', 'png', 'JPEG', 'JPG', 'PNG', 'GIF');
+    $ext = pathinfo($Picture['name'], PATHINFO_EXTENSION);
+    if (!in_array($ext, $allowed)) {
+      $updatearray['picerr'] = 'Please updload valid image';
+    } else if ($Picture['name']['size'] > 200000) {
+      $updatearray['picerr'] = 'size should be less than 2 kb';
+    } else {
+      move_uploaded_file($temp_name, $path);
+      $updatearray['picerr'] = '';
+    }
   }
+
+
   $name = $Picture['name']!=null? $Picture['name'] : $data['Picture'];
-  $sql = "UPDATE users SET `First_name`  = '$Fname' , `Last_name`  = '$Lname' ,`Secordary_mail`  = '$Altname', `Picture`  = '$name'  WHERE Email = '$Ename'";
-  if ($ob->insert($sql)) {
+
+  $count_x = 0;
+  foreach ($updatearray as $key => $value) {
+    if ($value != "") {
+      $count_x = 1;
+      break;
+      
+    }
+  }
+
+  if($count_x == 1) {
+    echo json_encode(
+      [
+        "arrayvalue" => $updatearray,
+        "response" => false
+      ]
+    );
+  } else {
+    $sql = "UPDATE users SET `First_name`  = '$Fname' , `Last_name`  = '$Lname' ,`Secordary_mail`  = '$Altname', `Picture`  = '$name'  WHERE Email = '$Ename'";
+    $ob->insert($sql);
     echo json_encode([
       'response' => true,
       'message' => "Profile Updated successfully"
 
     ]);
-  } else {
-    echo json_encode([
-      'response' => false,
-      'message' => "Somthing Went wrong",
-      'error_id' => 'RgsErr'
-    ]);
   }
+
 }
 
 if(isset($_POST['id'])) {
-$dlt="update users set Picture =null WHERE Email='$ssn'";
+$dlt="update users set Picture =null WHERE Email='$Ename'";
   if($obj->insert($dlt)) {
     echo json_encode([
       'response' => true,

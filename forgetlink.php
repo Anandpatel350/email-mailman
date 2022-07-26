@@ -21,10 +21,10 @@
           <h2>Mailman.com</h2>
           <div>
             <form action="phpinclude/send_reset_link.php" id="resetForm">
-              <span id="error" class="danger-text"></span>
-              <p>Enter Your register E-mail/User Name</p>
-              <input type="email" id="Email" class="form-control form-control-lg" name="email" placeholder="Enter Email/User Name" />
-              <div class="d-flex pt-3 justify-content-between"><a href="/index.html">back to login</a>
+              <span id="error" class="text-danger"></span>
+              <p>Enter Your register E-mail</p>
+              <input type="text" id="Email" class="form-control form-control-lg" name="email" placeholder="Enter Email" />
+              <div class="d-flex pt-3 justify-content-between"><a href="index.php">back to login</a>
                 <a href="#">
                   <button type="submit" class="btn btn-success btn-lg">Send</button>
                 </a>

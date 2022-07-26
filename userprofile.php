@@ -34,7 +34,7 @@ if (!isset($_SESSION['Email'])) {
                         $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';
                         ?>
                     
-                    <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
+                    <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px;height:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
             <ul class="dropdown-menu mt-2" style="margin-left:150px;" aria-labelledby="dropdownMenu2">
             <li><button class="dropdown-item text-center" type="button"><a href="dashboard.php">Home</a></button></li>
               <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
@@ -49,7 +49,7 @@ if (!isset($_SESSION['Email'])) {
     </nav>
   <!-- sssss -->
   <h1 id="msg" class="text-danger text-center pt-5"></h1>
-  <section>
+  <section style="margin-top:150px;">
     <div class="container h-custom">
 
       <div class="row d-flex justify-content-center align-items-center h-100 ms-5">
@@ -73,7 +73,7 @@ if (!isset($_SESSION['Email'])) {
         </div>
         <div class="col-md-3">
 
-          <img src="images/<?php echo $profile_url ; ?>" class="img-fluid" alt="Sample image">
+          <img src="images/<?php echo $profile_url ; ?>" class="img-fluid" alt="Sample image"  style="width:300px;height:260px">
 
         </div>
       </div>

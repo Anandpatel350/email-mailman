@@ -33,10 +33,10 @@ if (!isset($_SESSION['Email'])) {
           $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';
           ?>
 
-          <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
+          <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px;height:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
             <ul class="dropdown-menu mt-2" style="margin-left:150px;" aria-labelledby="dropdownMenu2">
-            <li><button class="dropdown-item text-center" type="button"><a href="dashboard.php">Home</a></button></li>
-            <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
+              <li><button class="dropdown-item text-center" type="button"><a href="dashboard.php">Home</a></button></li>
+              <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
               <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
             </ul>
 
@@ -47,7 +47,7 @@ if (!isset($_SESSION['Email'])) {
 
     </div>
   </nav>
-  <section class="vh-100">
+  <section style="margin-top: 150px;">
     <div class="container h-custom">
 
       <div class="row d-flex justify-content-center align-items-center h-100 ms-5">
@@ -77,19 +77,20 @@ if (!isset($_SESSION['Email'])) {
           </div>
         </div>
         <div class="col-md-2">
-          <img src="images/<?php echo $profile_url; ?>" class="img-fluid" alt="Sample image" />
+          <img src="images/<?php echo $profile_url; ?>" class="img-fluid" alt="Sample image" style="width:300px;height:170px"/>
           <div class="d-flex justify-content-around">
-            
-              <label for="Pic" class="btn btn-success mt-2">Select  Picture</label>
-              <input id="Pic" style="visibility:hidden;" id="Pic" type="file" value="picture" name="avtar">
-            
+
+            <label for="Pic" class="btn btn-success mt-2">Select Picture</label>
+            <input id="Pic" style="visibility:hidden;" id="Pic" type="file" value="picture" name="avtar">
+
 
             <!-- <input type="file" id="Pic" class="btn btn-success mt-2 me-3 w-50"  class="pt-3"> -->
             <button type="button" class="btn btn-success mt-2" id="deletepic"> Remove Picture</button>
+            
+          </div>
           <span id="picerr" class="text-danger"></span>
         </div>
       </div>
-    </div>
   </section>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
@@ -99,7 +100,6 @@ if (!isset($_SESSION['Email'])) {
       var error = 0;
       var FnameVal = $("#FirstName").val();
       var LnameVal = $("#LastName").val();
-      var EmailVal = "<?php echo $_SESSION['Email'] ?>";
       var AltemailVal = $("#AltEmail").val();
       var formData = new FormData();
       var file = document.querySelector('#Pic');
@@ -107,7 +107,6 @@ if (!isset($_SESSION['Email'])) {
       formData.append("submit", true);
       formData.append("First_name", FnameVal);
       formData.append("Last_name", LnameVal);
-      formData.append("Email_name", EmailVal);
       formData.append("Atlemail_name", AltemailVal);
       $.ajax({
         url: "phpinclude/profileupdatebe.php",
@@ -118,15 +117,19 @@ if (!isset($_SESSION['Email'])) {
         dataType: 'JSON',
         type: 'POST',
         success: function(data) {
-          if (!data['response']) {
-            // alert("#"+data['error_id'])
-            $("#" + data['error_id']).html(data['message'])
+
+          if (!data.response) {
+            $.each(data.arrayvalue, function(index, value) {
+              $("#" + index).html(value);
+            });
           } else {
-            // location.href = "dashboard.php"
-            // alert(data['message']);
+            alert("Profile updated successfully")
             location.href = "profileUpdate.php"
           }
         }
+
+
+
       });
 
     });

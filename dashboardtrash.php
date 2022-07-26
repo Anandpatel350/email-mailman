@@ -51,7 +51,7 @@ if (!isset($_SESSION['Email'])) {
                     $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png';
                     ?>
 
-                    <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
+                    <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px;height:50px;" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
                         <ul class="dropdown-menu mt-2" style="margin-left:150px;" aria-labelledby="dropdownMenu2">
                             <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
                             <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
@@ -214,7 +214,7 @@ if (!isset($_SESSION['Email'])) {
                             tab += "<div class='dropdown'>"
                             tab += "<div class='dropdown'>"
                             tab += "<a class='dropdown-toggle' href='#' role='button' id='dropdownMenuLink' data-bs-toggle='dropdown' aria-expanded='false'>"
-                            tab += "Dropdown link"
+                            tab += "Participants"
                             tab += "</a>"
 
                             tab += "<ul class='dropdown-menu' aria-labelledby='dropdownMenuLink'>"
@@ -240,8 +240,7 @@ if (!isset($_SESSION['Email'])) {
                             tab += "</div>"
                             tab += "<div class='row mt-2'>"
                             tab += "<div class='d-flex '>"
-                            tab += "<div><button class='btn btn-outline-dark mx-2'  id='Reply' type='submit'>Reply</button></div>"
-                            tab += "<div><button class='btn btn-outline-dark mx-4'  id='Reply All' type='submit'>Reaply All</button></div>"
+                            tab += "<div><button class='btn btn-outline-dark mx-2'  id='' type='submit'>Restore</button></div>"
                             tab += "</div>"
                             tab += "</div>"
 
@@ -420,7 +419,7 @@ if (!isset($_SESSION['Email'])) {
                     data: {
                         trash_value_delete: true,
                         trash_delete: iddata
-                    },
+                    },  
                     success: function(data) {
                         if (data['response']) {
                             $("#del,#Restore").hide();

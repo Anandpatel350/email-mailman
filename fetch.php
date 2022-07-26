@@ -12,41 +12,54 @@ if (isset($_POST['submsg'])) {
 
   $to_mail = strtolower($_POST['to_name']);
 
-  if (!filter_var($to_mail, FILTER_VALIDATE_EMAIL)) {
+if(($to_mail==$email)){
+  $msgarray[0]='toname';
+}elseif (!filter_var($to_mail, FILTER_VALIDATE_EMAIL)) {
     $msgarray[0]='toname';
   }
-  
-
+  else
+  {
   $sql = "SELECT id from users where Email = '$to_mail'";
   $che = $obj->checkquery($sql);
   if ($che == false) {
     $msgarray[0]='toname';
   }
-   
+}
   
   $cc_mail = strtolower($_POST['cc_name']);
+  
   if ($cc_mail != null) {
-    if (!filter_var($cc_mail, FILTER_VALIDATE_EMAIL)) {
+    if(($cc_mail==$email || $cc_mail==$to_mail)){
       $msgarray[1]='ccname';
     }
-   
+    elseif (!filter_var($cc_mail, FILTER_VALIDATE_EMAIL)) {
+      $msgarray[1]='ccname';
+    }
+   else{
     $sql = "SELECT id from users where Email = '$cc_mail'";
     $che = $obj->checkquery($sql);
     if ($che == false) {
       $msgarray[1]='ccname';
     }
   }
+  }
 
   $bcc_mail = strtolower($_POST['bcc_name']);
+  
   if ($bcc_mail != null) {
-    if (!filter_var($bcc_mail, FILTER_VALIDATE_EMAIL)) {
+    if(($bcc_mail==$email || $bcc_mail==$to_mail || $bcc_mail==$cc_mail)){
       $msgarray[2]='bccname';
     }
+    elseif (!filter_var($bcc_mail, FILTER_VALIDATE_EMAIL)) {
+      $msgarray[2]='bccname';
+    }
+    else{
     $sql = "SELECT id from users where Email = '$bcc_mail'";
     $che = $obj->checkquery($sql);
     if ($che == false) {
       $msgarray[2]='bccname';
     }
+  }
   }
   $sub_mail = $obj->test_input($_POST['sub_name']);
 
@@ -64,7 +77,7 @@ if (isset($_POST['submsg'])) {
   if((count($msgarray) == 0)) {
     $wa = "INSERT INTO userdata(to_email,from_email, cc_email,bcc_email ,`subject`, `message`, attachment,`time`,from_trash,to_trash,cc_trash,bcc_trash,draft) VALUES ('$to_mail','$email','$cc_mail','$bcc_mail', '$sub_mail', '$text_mail ', '$name','$dat','0','0','0','0','0')";
     $obj->insert($wa);
-    echo json_encode(['response' => true, 'message' => 'Msg sent successfull']);
+    echo json_encode(['response' => true, 'message' => 'Massage sent successfully']);
   }
   else{
     echo json_encode(
@@ -95,7 +108,7 @@ if (isset($_POST['draftdata'])) {
   $wa = "INSERT INTO userdata(from_email,to_email, cc_email,bcc_email ,`subject`, `message`, attachment,`time`,from_trash,to_trash,cc_trash,bcc_trash,draft) VALUES ('$email','$to_mail','$cc_mail','$bcc_mail', '$sub_mail', '$text_mail ', '$name','$dat','0','0','0','0','1')";
 
   if ($obj->insert($wa)) {
-    echo json_encode(['response' => true, 'message' => 'Msg saved in draft successfull']);
+    echo json_encode(['response' => true, 'message' => 'Massage saved in draft successfully']);
   }
 }
 }

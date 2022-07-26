@@ -49,7 +49,7 @@ if (!isset($_SESSION['Email'])) {
                     <button class="btn btn-outline-dark me-3" type="submit"><?php echo $_SESSION['Email']; ?></button>
                     <?php $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png'; ?>
 
-                    <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
+                    <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px;height:50px;" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
                         <ul class="dropdown-menu mt-2 " style="margin-left:150px;" aria-labelledby="dropdownMenu2">
                             <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
                             <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
@@ -223,7 +223,7 @@ if (!isset($_SESSION['Email'])) {
                             tab += "<div class='dropdown'>"
                             tab += "<div class='dropdown'>"
                             tab += "<a class='dropdown-toggle' href='#' role='button' id='dropdownMenuLink' data-bs-toggle='dropdown' aria-expanded='false'>"
-                            tab += "Dropdown link"
+                            tab += "Participants"
                             tab += "</a>"
 
                             tab += "<ul class='dropdown-menu' aria-labelledby='dropdownMenuLink'>"

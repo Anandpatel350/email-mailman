@@ -4,6 +4,7 @@ if (isset($_POST['submit'])) {
     $email = $_SESSION['Email'];
     $oldpass = $_POST['oldpassword'];
     $Pass = $_POST['Password'];
+    
     if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%])[0-9A-Za-z!@#$%]{8,20}$/', ($Pass))) {
         echo json_encode([
             'response' => false,
@@ -12,6 +13,16 @@ if (isset($_POST['submit'])) {
         ]);
         die;
     }
+    if($Pass==$data['Password']){
+
+        echo json_encode([
+            'response' => false,
+            'message' => "Please Choose New Password",
+            'error_id' => 'passErr'
+        ]);
+        die;
+    }
+
     $Altpass = $_POST['passwordagain'];
     if ($Pass != $Altpass) {
         echo json_encode([
