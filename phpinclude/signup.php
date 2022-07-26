@@ -13,7 +13,7 @@ if (isset($_POST['submit'])) {
   $patterngmail = "/^[a-zA-Z]{3}+[a-zA-Z0-9_\-\.]+@gmail\.com$/";
   $patternyahoo = "/^[a-zA-Z]{3}+[a-zA-Z0-9_\-\.]+@yahoo\.com$/";
   $usernampatter = "/^[a-zA-Z]{3}+[a-zA-Z0-9_\-\.]*$/";
-  $namepattern = "/^[A-Za-z]+$/";
+  $namepattern = "/^[A-Za-z]{3}+$/";
   $Altname = strtolower($_POST['Atlemail_name']);
   $Pass = $_POST['Passworda'];
   $Altpass = $_POST['ConfirmPassworda'];
@@ -31,7 +31,7 @@ if (isset($_POST['submit'])) {
 
   if ($Lname == '' and $Lname == null) {
     $errid['lnameErr'] = 'Please Enter Name';
-  } else if (!preg_match($namepattern, $Fname)) {
+  } else if (!preg_match($namepattern, $Lname)) {
     $errid['lnameErr'] = 'Only letters allowed';
   } else {
 

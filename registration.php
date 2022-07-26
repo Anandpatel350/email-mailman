@@ -126,7 +126,7 @@
   if(FnameVal=='' || LnameVal=='' || LnameVal=='' || EmailVal=='' || AltemailVal=='' || PassVal=='' || CnfpassVal==''){
     $("#checkbox_error_msg").text("Please fill required field").addClass("text-danger small");
   }else{
-    $("#checkbox_error_msg").text("Agreed").removeClass("text-danger").addClass("text-success");
+    $("#checkbox_error_msg").text("I agree to the terms and conditions of ManMail").removeClass("text-danger").addClass("text-success");
   }
         
 
@@ -150,7 +150,7 @@
         }
       });
     } else {
-      $("#checkbox_error_msg").text("Agree to the terms and conditions of ManMail").addClass("text-danger small");
+      $("#checkbox_error_msg").text("Please mark this field as checked before submit the form ").addClass("text-danger small");
     }
 
     });
