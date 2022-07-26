@@ -58,33 +58,29 @@ if (!isset($_SESSION['Email'])) {
           <div>
             <form id="formdata">
               <span id="RgsErr" class="text-danger"></span>
-              <div><label for="FirstName"></label>
-                <input type="text" id="FirstName" class="form-control form-control-lg w-75 mb-3" placeholder="First Name" value="<?php echo $data['First_name']; ?>" required />
+              <div><label for="FirstName">First Name</label>
+                <input type="text" id="FirstName" class="form-control form-control-lg w-75" placeholder="First Name" value="<?php echo $data['First_name']; ?>" required />
                 <span id="namerr" class="text-danger"></span>
               </div>
-              <div>
+              <div class="mt-3">
                 <label for="LastName">Last Name</label>
-                <input type="text" id="LastName" class="form-control form-control-lg w-75 mb-3" placeholder="Last Name" value="<?php echo $data['Last_name']; ?>" required />
+                <input type="text" id="LastName" class="form-control form-control-lg w-75" placeholder="Last Name" value="<?php echo $data['Last_name']; ?>" required />
                 <span id="lnamerr" class="text-danger"></span>
               </div>
-              <div>
+              <div class="mt-3">
                 <label for="AltEmail"> Enter Recovery E-mail</label>
-                <input type="email" id="AltEmail" class="form-control form-control-lg w-75 mb-3" placeholder="Enter Email" value="<?php echo $data['Secordary_mail']; ?>" required />
+                <input type="email" id="AltEmail" class="form-control form-control-lg w-75" placeholder="Enter Email" value="<?php echo $data['Secordary_mail']; ?>" required />
                 <span id="cemailErr" class="text-danger"></span>
-              </div>
-              <input type="button" class="btn btn-success" value="submit" id="profileupdate">
+              </div >
+              <input type="button" class="btn btn-success mt-3" value="submit" id="profileupdate">
             </form>
           </div>
         </div>
         <div class="col-md-2">
           <img src="images/<?php echo $profile_url; ?>" class="img-fluid" alt="Sample image" style="width:300px;height:170px"/>
           <div class="d-flex justify-content-around">
-
             <label for="Pic" class="btn btn-success mt-2">Select Picture</label>
             <input id="Pic" style="visibility:hidden;" id="Pic" type="file" value="picture" name="avtar">
-
-
-            <!-- <input type="file" id="Pic" class="btn btn-success mt-2 me-3 w-50"  class="pt-3"> -->
             <button type="button" class="btn btn-success mt-2" id="deletepic"> Remove Picture</button>
             
           </div>
