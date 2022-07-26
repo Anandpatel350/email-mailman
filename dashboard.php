@@ -50,7 +50,7 @@ if (!isset($_SESSION['Email'])) {
                     <?php $profile_url = !empty($data['Picture']) ? $data['Picture'] : 'piclogo.png'; ?>
 
                     <div><img src="images/<?php echo $profile_url; ?>" class="rounded-5 dropdown-toggle fixd" style="width:50px;height:50px;" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" />
-                        <ul class="dropdown-menu mt-2 " style="margin-left:80px;" aria-labelledby="dropdownMenu2">
+                        <ul class="dropdown-menu mt-2 " style="margin-left:85px;" aria-labelledby="dropdownMenu2">
                             <li><button class="dropdown-item text-center" type="button"><a href="userprofile.php">Profile</a></button></li>
                             <li><button class="dropdown-item text-center" type="button"><a href="phpinclude/logout.php">Log Out</a></button></li>
                         </ul>
