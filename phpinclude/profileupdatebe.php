@@ -3,7 +3,7 @@ include "../profileupdatedata.php";
 $updatearray = array();
 $Ename=$_SESSION['Email'];
 if (isset($_POST['submit'])) {
-  $namepattern = "/^[A-Za-z]+$/";
+  $namepattern = "/^[A-Za-z]{3}+$/";
   $patternyahoo = "/^[a-zA-Z]{3}+[a-zA-Z0-9_\-\.]+@yahoo\.com$/";
   $patterngmail = "/^[a-zA-Z]{3}+[a-zA-Z0-9_\-\.]+@gmail\.com$/";
   // $patternyahoo = "/^[a-zA-Z]{3}+[a-zA-Z0-9_\-\.]+@yahoo\.com$/";
