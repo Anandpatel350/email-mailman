@@ -30,7 +30,7 @@ if (isset($_POST['submit'])) {
   }
   elseif(!preg_match($namepattern, $Lname)){
 
-    $updatearray['lnamerr'] = 'Please enter valid last Nameiii';
+    $updatearray['lnamerr'] = 'Please enter valid last Name';
 
   }
   else{
@@ -39,7 +39,7 @@ if (isset($_POST['submit'])) {
   $Altname = $_POST['Atlemail_name'];
   if (!preg_match($patterngmail, $Altname) && !preg_match($patternyahoo, $Altname)) {
 
-    $updatearray['cemailErr'] = 'email address not vlaid';
+    $updatearray['cemailErr'] = 'email address not valid';
   } else {
 
     $updatearray['cemailErr'] = '';
