@@ -226,7 +226,7 @@ if (!isset($_SESSION['Email'])) {
                             tab +=  "</a>"
 
                             tab +=   "<ul class='dropdown-menu' aria-labelledby='dropdownMenuLink'>"
-                            tab +=  "<li><a class='dropdown-item link-primary' href='#'>Too:- "+value.to_email+"</a></li>"
+                            tab +=  "<li><a class='dropdown-item link-primary' href='#'>To:- "+value.to_email+"</a></li>"
                             tab +=  "<li><a class='dropdown-item link-primary' href='#'>Cc:- "+value.cc_email+"</a></li>"
                             tab +=  "<li><a class='dropdown-item link-primary' href='#'>Bcc:- "+value.bcc_email+"</a></li>"
                             tab += "</ul>"

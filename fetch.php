@@ -12,9 +12,7 @@ if (isset($_POST['submsg'])) {
 
   $to_mail = strtolower($_POST['to_name']);
 
-if(($to_mail==$email)){
-  $msgarray[0]='toname';
-}elseif (!filter_var($to_mail, FILTER_VALIDATE_EMAIL)) {
+if (!filter_var($to_mail, FILTER_VALIDATE_EMAIL)) {
     $msgarray[0]='toname';
   }
   else
@@ -29,10 +27,7 @@ if(($to_mail==$email)){
   $cc_mail = strtolower($_POST['cc_name']);
   
   if ($cc_mail != null) {
-    if(($cc_mail==$email || $cc_mail==$to_mail)){
-      $msgarray[1]='ccname';
-    }
-    elseif (!filter_var($cc_mail, FILTER_VALIDATE_EMAIL)) {
+   if (!filter_var($cc_mail, FILTER_VALIDATE_EMAIL)) {
       $msgarray[1]='ccname';
     }
    else{
@@ -47,10 +42,7 @@ if(($to_mail==$email)){
   $bcc_mail = strtolower($_POST['bcc_name']);
   
   if ($bcc_mail != null) {
-    if(($bcc_mail==$email || $bcc_mail==$to_mail || $bcc_mail==$cc_mail)){
-      $msgarray[2]='bccname';
-    }
-    elseif (!filter_var($bcc_mail, FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($bcc_mail, FILTER_VALIDATE_EMAIL)) {
       $msgarray[2]='bccname';
     }
     else{
@@ -326,24 +318,30 @@ if (isset($_POST['inbox_value'])) {
   $result = $obj->fetchdata($qry);
   if($email == $result['to_email']) {
     $sql = "UPDATE userdata SET to_trash  = '1' WHERE id='$IDD'";
+    $obj->insert($sql);
    
-  } else if($email == $result['cc_email']) {
+  }  
+  if($email == $result['cc_email']) {
     $sql = "UPDATE userdata SET cc_trash  = '1' WHERE id='$IDD'";
-  } else if($email == $result['bcc_email']) {
+    $obj->insert($sql);
+  } 
+   if($email == $result['bcc_email']) {
     $sql = "UPDATE userdata SET bcc_trash  = '1' WHERE id='$IDD'";
+    $obj->insert($sql);
   }
-  if ($obj->insert($sql)) {
-    echo json_encode([
-      'response' => true,
-      'message' => "selected value deleted",
-    ]);
-  } else {
-    echo json_encode([
-      'response' => false,
-      'message' => "selected value not deleted",
+  echo json_encode([
+        'response' => true,
+        'message' => "selected value deleted",
+      ]);
+  // if () {
+  //   
+  // } else {
+  //   echo json_encode([
+  //     'response' => false,
+  //     'message' => "selected value not deleted",
 
-    ]);
-  }
+  //   ]);
+  // }
 }
 // ----------------trash item delete-------------
 if (isset($_POST['trash_value_delete'])) {
@@ -382,27 +380,38 @@ if (isset($_POST['trash_value_restore'])) {
   $result = $obj->fetchdata($qry);
   if($email == $result['from_email']) {
     $sql = "UPDATE userdata SET from_trash  = '0' WHERE id='$IDD'";
-   
-  }else if($email == $result['to_email']) {
+    $obj->insert($sql);
+  }
+  if($email == $result['to_email']) {
     $sql = "UPDATE userdata SET to_trash  = '0' WHERE id='$IDD'";
+    $obj->insert($sql);
    
-  } else if($email == $result['cc_email']) {
+  } 
+  
+  if($email == $result['cc_email']) {
     $sql = "UPDATE userdata SET cc_trash  = '0' WHERE id='$IDD'";
-  } else if($email == $result['bcc_email']) {
+    $obj->insert($sql);
+  } 
+  if($email == $result['bcc_email']) {
     $sql = "UPDATE userdata SET bcc_trash  = '0' WHERE id='$IDD'";
+    $obj->insert($sql);
   }
-  if ($obj->insert($sql)) {
-    echo json_encode([
-      'response' => true,
-      'message' => "value Restored",
-    ]);
-  } else {
-    echo json_encode([
-      'response' => false,
-      'message' => "selected value not deleted",
+  echo json_encode([
+    'response' => true,
+    'message' => "value Restored",
+  ]);
+  // if ($obj->insert($sql)) {
+  //   echo json_encode([
+  //     'response' => true,
+  //     'message' => "value Restored",
+  //   ]);
+  // } else {
+  //   echo json_encode([
+  //     'response' => false,
+  //     'message' => "selected value not deleted",
 
-    ]);
-  }
+  //   ]);
+  // }
 }
 
 

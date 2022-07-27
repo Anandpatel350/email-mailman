@@ -240,7 +240,7 @@ if (!isset($_SESSION['Email'])) {
                             tab += "</div>"
                             tab += "<div class='row mt-5'>"
 
-                            tab += " <div class='col-sm-12'><div class='border rounded-3' style='word-wrap: break-word; padding:10px;height:350px'>" + value.message + "</div></div>"
+                            tab += " <div class='col-sm-12'><div class='border rounded-3' style='word-wrap: break-word; padding:10px;height:350px'><pre>" + value.message + "</pre></div></div>"
 
                             tab += "</div>"
                             tab += "<div class='row mt-2'>"
@@ -406,6 +406,8 @@ if (!isset($_SESSION['Email'])) {
                             $("#sideclose").click();
                             $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
                             $("#toname,#ccname,#bccname").css('border', '');
+                            var x=$("#page_number").val();
+                            loadTable(x);
 
 
                         }
