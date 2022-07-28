@@ -234,6 +234,8 @@ if (!isset($_SESSION['Email'])) {
             //-----------------------search bar------------
             $("#search-item").on("keyup", function(e) {
                 e.preventDefault(e);
+                var searchval = $("#search-item").val();
+                if (searchval != '') {
                 loadTablesearch();
 
                 function loadTablesearch(page) {
@@ -262,6 +264,12 @@ if (!isset($_SESSION['Email'])) {
                         }
                     });
                 }
+            }
+            else{
+                $('#heading').html('<h5>Draft</h5>')
+                    var x = $("#page_number").val();
+                    loadTable(x);
+            }
                 // -----------paggination code-----
                 $(document).on("click", "#paggii ul .page-link", function(e) {
                     e.preventDefault();

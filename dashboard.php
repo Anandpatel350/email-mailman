@@ -191,6 +191,10 @@ if (!isset($_SESSION['Email'])) {
                 loadTable(page_id);
 
             });
+            $("#sideclose").on("click", function() {
+                $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
+                $("#toname,#ccname,#bccname").css('border', '');
+            })
 
             // -----------------------open mail-------------
             $(document).on("click", ".inboxclass", function(e) {
@@ -251,16 +255,49 @@ if (!isset($_SESSION['Email'])) {
                             tab += "<div class='row mt-5'>"
                             tab += "<div class='d-flex '>"
                             tab += "<div><button class='btn btn-outline-dark mx-2'  id='Reply' type='submit'>Reply</button></div>"
-                            tab += "<div><button class='btn btn-outline-dark mx-4'  id='Reply All' type='submit'>Reaply All</button></div>"
+                            tab += "<div><button class='btn btn-outline-dark mx-4'  id='Reply_All' type='submit'>Reaply All</button></div>"
                             tab += "</div>"
                             tab += "</div>"
 
                             tab += "</div>"
                             tab += "</div>"
+                            $(document).ready(function() {
+
+                                $("#Reply").on("click", function() {
+                                    $("#Curs").click();
+                                    $("#toname").val(value.to_email);
+                                    var text = value.subject;
+                                    var text_value = text.indexOf("Re:-");
+                                    if (text_value == 0) {
+                                        $("#subject").val(value.subject);
+                                    } else {
+                                        $("#subject").val("Re:-" + value.subject);
+                                    }
+
+                                });
+
+                                $("#Reply_All").on("click", function() {
+                                    $("#Curs").click();
+                                    $("#toname").val(value.to_email);
+                                    $("#ccname").val(value.cc_email);
+                                    $("#bccname").val(value.bcc_email);
+                                    var text = value.subject;
+                                    var text_value = text.indexOf("Re:-");
+                                    if (text_value == 0) {
+                                        $("#subject").val(value.subject);
+                                    } else {
+                                        $("#subject").val("Re:-" + value.subject);
+                                    }
+
+                                });
+
+
+                            });
 
                         });
 
                         $("#table-data").append(tab);
+
                     }
                 });
 
@@ -277,33 +314,41 @@ if (!isset($_SESSION['Email'])) {
 
             $("#search-item").on("keyup", function(e) {
                 e.preventDefault(e);
-                loadTablesearch();
 
-                function loadTablesearch(page) {
-                    $("#heading").html("Search Items");
-                    var searchval = $("#search-item").val();
-                    jQuery.ajax({
+                var searchval = $("#search-item").val();
+                if (searchval != '') {
+                    loadTablesearch();
 
-                        url: "fetch.php",
-                        type: "POST",
-                        dataType: "JSON",
-                        data: {
-                            'searchitem': true,
-                            'serchtext': searchval,
-                            'page_no': page
+                    function loadTablesearch(page) {
+                        $("#heading").html("Search Items");
+                        var searchval = $("#search-item").val();
+                        jQuery.ajax({
+
+                            url: "fetch.php",
+                            type: "POST",
+                            dataType: "JSON",
+                            data: {
+                                'searchitem': true,
+                                'serchtext': searchval,
+                                'page_no': page
 
 
-                        },
-                        success: function(data) {
-                            if (data.status == false) {
-                                $("#table-data").html("<h1>" + data.massege + "</h1>");
-                            } else {
-                                // $("#table-d  ata").empty();
-                                $("#table-data").html(data);
+                            },
+                            success: function(data) {
+                                if (data.status == false) {
+                                    $("#table-data").html("<h1>" + data.massege + "</h1>");
+                                } else {
+                                    // $("#table-d  ata").empty();
+                                    $("#table-data").html(data);
+                                }
+
                             }
-
-                        }
-                    });
+                        });
+                    }
+                } else {
+                    $('#heading').html('<h5>Inbox Item</h5>')
+                    var x = $("#page_number").val();
+                    loadTable(x);
                 }
                 // -----------paggination code-----
                 $(document).on("click", "#paggii ul .page-link", function(e) {
@@ -347,7 +392,9 @@ if (!isset($_SESSION['Email'])) {
                         if (data['response']) {
                             // alert(data['message'])
                             $('#popup').html('<i><h4>' + data['message'] + '</h4><i>');
-                            $('#popup').show(function() {$('#popup').delay(700).fadeOut(700);});
+                            $('#popup').show(function() {
+                                $('#popup').delay(700).fadeOut(700);
+                            });
                             $("#sideclose").click();
                             $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
                             $("#toname,#ccname,#bccname").css('border', '');
@@ -391,11 +438,11 @@ if (!isset($_SESSION['Email'])) {
                     contentType: false,
                     success: function(data) {
                         if (!data['response']) {
-                            
+
                             $.each(data.error_value, function(index, value) {
                                 $("#" + value).css('border', '1px solid red')
                             });
-                            
+
 
 
                         } else {
@@ -403,10 +450,11 @@ if (!isset($_SESSION['Email'])) {
                             $('#popup').show(function() {
                                 $('#popup').delay(700).fadeOut(700);
                             });
+                            $('#heading').html('<h5>Inbox Item</h5>')
                             $("#sideclose").click();
                             $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
                             $("#toname,#ccname,#bccname").css('border', '');
-                            var x=$("#page_number").val();
+                            var x = $("#page_number").val();
                             loadTable(x);
 
 

@@ -58,7 +58,8 @@ if (!filter_var($to_mail, FILTER_VALIDATE_EMAIL)) {
   $text_mail = $obj->test_data($_POST['text_name']);
 
   $attechment = $_FILES['files'];
-  $path = $_SERVER['DOCUMENT_ROOT'] . "/mail_project/images";
+  $path = "../images/";
+  // $path = $_SERVER['DOCUMENT_ROOT'] . "/mail_project/images";
   $temp_name = $attechment['tmp_name'];
   $name = $attechment['name'];
   $path = $path . "/" . $name;
@@ -80,7 +81,7 @@ if (!filter_var($to_mail, FILTER_VALIDATE_EMAIL)) {
     );
   }
 }
-// -----------
+// -----------draft-----------------------
 if (isset($_POST['draftdata'])) {
 
   $to_mail = $obj->test_input($_POST['to_name']);
@@ -503,7 +504,7 @@ if (isset($_POST['searchitem'])) {
   $output = $result->fetch_all(MYSQLI_ASSOC);
 
   $datavalue = '';
-  $datavalue .= " <table class='table'>  <div id='table_head'> <tr><th></th> <th>@mailman.com</th><th>subject</th> <th>YY/MM-DD</th> </tr></div><tbody >";
+  $datavalue .= " <table class='table'>  <div id='table_head'> <tr><th style='width:5%'></th> <th style='width:42%'>@mailman.com</th><th style='width:38%'>subject</th><th style='width:15%'>YY/MM-DD</th> </tr></div><tbody >";
   foreach ($output as $k => $v) {
     $datavalue .= "<tr data-id=" . $v['id'] . "><td><input type='checkbox' name='inboxtable' class='checkinbox' data-id=" . $v['id'] . "></td><td class='inboxclass'>" . $v['from_email'] . "</td><td class='inboxclass'>" .  $v['subject'] . "</td><td class='inboxclass'>" . $v['time'] . "</td></tr>";
   }

@@ -22,7 +22,7 @@ if (!isset($_SESSION['Email'])) {
             top: 160px;
             right: 25px;
             z-index: 9999;
-           text-align: center;
+            text-align: center;
             width: 500px;
             height: 100px;
             padding-top: 40px;
@@ -70,7 +70,7 @@ if (!isset($_SESSION['Email'])) {
     <div class="sidebar">
         <div class="mt-3">
             <a>
-                <div><button type="submit" class="btn btn-outline-dark bg-info px-5 " data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Compose</button></div>
+                <div><button type="submit" class="btn btn-outline-dark bg-info px-5 " data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo" id="Curs">Compose</button></div>
             </a>
             <a href="dashboard.php" class="">Inbox</a>
             <a href="dashboardsent.php" class="">Send</a>
@@ -184,13 +184,17 @@ if (!isset($_SESSION['Email'])) {
                 loadTable(page_id);
 
             });
+            $("#sideclose").on("click", function() {
+                $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
+                $("#toname,#ccname,#bccname").css('border', '');
+            })
 
             // -----------------------open mail---------------
             $(document).on("click", ".inboxclass", function(e) {
 
                 e.preventDefault(e);
                 $("#table-data").html("");
-               
+
 
                 var trval = $(this).parent().attr('data-id');
                 jQuery.ajax({
@@ -235,18 +239,52 @@ if (!isset($_SESSION['Email'])) {
                             tab += "</div>"
                             tab += "<div class='row mt-2'>"
                             tab += "<div class='col-sm-12''>"
-                            tab +="<a href='' class='link-primary'>Attachments</a>"
+                            tab += "<a href='' class='link-primary'>Attachments</a>"
                             tab += "</div>"
                             tab += "</div>"
                             tab += "<div class='row mt-2'>"
                             tab += "<div class='d-flex '>"
-                            tab += "<div><button class='btn btn-outline-dark mx-2'  id='' type='submit'>Restore</button></div>"
+                            tab += "<div><button class='btn btn-outline-dark mx-2'  id='Reply' type='submit'>Reply</button></div>"
+                            tab += "<div><button class='btn btn-outline-dark mx-4'  id='Reply_All' type='submit'>Reaply All</button></div>"
                             tab += "</div>"
                             tab += "</div>"
 
                             tab += "</div>"
                             tab += "</div>"
-                            
+
+                            $(document).ready(function() {
+
+                                $("#Reply").on("click", function() {
+                                    $("#Curs").click();
+                                    $("#toname").val(value.to_email);
+                                    var text = value.subject;
+                                    var text_value = text.indexOf("Re:-");
+                                    if (text_value == 0) {
+                                        $("#subject").val(value.subject);
+                                    } else {
+                                        $("#subject").val("Re:-" + value.subject);
+                                    }
+
+                                });
+
+                                $("#Reply_All").on("click", function() {
+                                    $("#Curs").click();
+                                    $("#toname").val(value.to_email);
+                                    $("#ccname").val(value.cc_email);
+                                    $("#bccname").val(value.bcc_email);
+                                    var text = value.subject;
+                                    var text_value = text.indexOf("Re:-");
+                                    if (text_value == 0) {
+                                        $("#subject").val(value.subject);
+                                    } else {
+                                        $("#subject").val("Re:-" + value.subject);
+                                    }
+
+                                });
+
+
+                            });
+
 
                         });
 
@@ -255,44 +293,51 @@ if (!isset($_SESSION['Email'])) {
                 });
 
             });
-             // back button
-             $(document).on("click", "#backbutton ", function(e) {
-                $('#heading').html('<h5>Inbox Item</h5>')
-                var x=$("#page_number").val();
-                            loadTable(x);
+            // back button
+            $(document).on("click", "#backbutton ", function(e) {
+                $('#heading').html('<h5>Trash</h5>')
+                var x = $("#page_number").val();
+                loadTable(x);
 
             });
             // ---------------------------------------------
             //-----------------------search bar------------
             $("#search-item").on("keyup", function(e) {
                 e.preventDefault(e);
-                loadTablesearch();
+                var searchval = $("#search-item").val();
+                if (searchval != '') {
+                    loadTablesearch();
 
-                function loadTablesearch(page) {
-                    $("#heading").html("Search Items");
-                    var searchval = $("#search-item").val();
-                    jQuery.ajax({
+                    function loadTablesearch(page) {
+                        $("#heading").html("Search Items");
+                        var searchval = $("#search-item").val();
+                        jQuery.ajax({
 
-                        url: "fetch.php",
-                        type: "POST",
-                        dataType: "JSON",
-                        data: {
-                            'searchitem': true,
-                            'serchtext': searchval,
-                            'page_no': page
+                            url: "fetch.php",
+                            type: "POST",
+                            dataType: "JSON",
+                            data: {
+                                'searchitem': true,
+                                'serchtext': searchval,
+                                'page_no': page
 
 
-                        },
-                        success: function(data) {
-                            if (data.status == false) {
-                                $("#table-data").html("<h1>" + data.massege + "</h1>");
-                            } else {
-                                // $("#table-d  ata").empty();
-                                $("#table-data").html(data);
+                            },
+                            success: function(data) {
+                                if (data.status == false) {
+                                    $("#table-data").html("<h1>" + data.massege + "</h1>");
+                                } else {
+                                    // $("#table-d  ata").empty();
+                                    $("#table-data").html(data);
+                                }
+
                             }
-
-                        }
-                    });
+                        });
+                    }
+                } else {
+                    $('#heading').html('<h5>Trash</h5>')
+                    var x = $("#page_number").val();
+                    loadTable(x);
                 }
                 // -----------paggination code-----
                 $(document).on("click", "#paggii ul .page-link", function(e) {
@@ -335,8 +380,10 @@ if (!isset($_SESSION['Email'])) {
                     success: function(data) {
                         if (data['response']) {
                             // alert(data['message'])
-                            $('#popup').html('<i><h4>'+data['message']+'</h4><i>');
-                            $('#popup').show(function(){$('#popup').delay(700).fadeOut(700);});
+                            $('#popup').html('<i><h4>' + data['message'] + '</h4><i>');
+                            $('#popup').show(function() {
+                                $('#popup').delay(700).fadeOut(700);
+                            });
                             $("#sideclose").click();
                             $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
                             $("#toname,#ccname,#bccname").css('border', '');
@@ -382,17 +429,19 @@ if (!isset($_SESSION['Email'])) {
                     success: function(data) {
                         if (!data['response']) {
                             // alert(data['message'])
-                            
+
                             $.each(data.error_value, function(index, value) {
                                 $("#" + value).css('border', '1px solid red')
                             });
                         } else {
-                            $('#popup').html('<i><h4>'+data['message']+'</h4><i>');
-                            $('#popup').show(function(){$('#popup').delay(700).fadeOut(700);});
+                            $('#popup').html('<i><h4>' + data['message'] + '</h4><i>');
+                            $('#popup').show(function() {
+                                $('#popup').delay(700).fadeOut(700);
+                            });
                             $("#sideclose").click();
                             $("#toname,#ccname,#bccname,#subject,#message-text,#attachment").val("");
                             $("#toname,#ccname,#bccname").css('border', '');
-                            
+
                         }
 
                     }
@@ -419,7 +468,7 @@ if (!isset($_SESSION['Email'])) {
                     data: {
                         trash_value_delete: true,
                         trash_delete: iddata
-                    },  
+                    },
                     success: function(data) {
                         if (data['response']) {
                             $("#del,#Restore").hide();
